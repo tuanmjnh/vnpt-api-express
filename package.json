@@ -1,0 +1,118 @@
+{
+  "name": "vnpt-api-express",
+  "version": "1.0.0",
+  "description": "Vnpt api express",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tuanmjnh/vnpt-api-express"
+  },
+  "author": "Tuấn Hin",
+  "license": "TM",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "build": "concurrently \"cross-env webpack --mode production\"",
+    "start": "node dist/server.js"
+  },
+  "dependencies": {
+    "async": "^2.6.0",
+    "bcrypt-nodejs": "^0.0.3",
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.2",
+    "compression": "^1.7.1",
+    "core-js": "^3.1.4",
+    "cors": "^2.8.5",
+    "dotenv": "^4.0.0",
+    "errorhandler": "^1.5.0",
+    "express": "^4.16.2",
+    "express-flash": "0.0.2",
+    "express-session": "^1.15.6",
+    "express-validator": "^4.3.0",
+    "fbgraph": "^1.4.1",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.17.3",
+    "lodash": "^4.17.5",
+    "lusca": "^1.5.2",
+    "moment": "^2.24.0",
+    "multer": "^1.4.1",
+    "nodemailer": "^4.4.1",
+    "oracledb": "^3.1.2",
+    "passport": "^0.4.0",
+    "passport-facebook": "^2.1.1",
+    "passport-local": "^1.0.0",
+    "pug": "^2.0.3",
+    "regenerator-runtime": "^0.13.2",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2",
+    "underscore": "^1.9.1",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.0",
+    "@babel/preset-env": "^7.5.0",
+    "autoprefixer": "^9.6.1",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.6",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "chai": "^4.1.2",
+    "clean-webpack-plugin": "^3.0.0",
+    "concurrently": "^3.5.1",
+    "copy-webpack-plugin": "^5.0.3",
+    "css-loader": "^3.0.0",
+    "eslint": "^5.16.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.17.3",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^3.2.0",
+    "jest": "^24.0.0",
+    "mini-css-extract-plugin": "^0.7.0",
+    "node-sass": "^4.12.0",
+    "nodemon": "^1.18.10",
+    "sass-loader": "^7.1.0",
+    "shelljs": "^0.8.1",
+    "stats-webpack-plugin": "^0.7.0",
+    "style-loader": "^0.23.1",
+    "supertest": "^3.0.0",
+    "webpack": "^4.35.2",
+    "webpack-cli": "^3.3.5",
+    "webpack-dev-middleware": "^3.7.0",
+    "webpack-hot-middleware": "^2.25.0",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "standard"
+    ],
+    "rules": {
+      "no-unused-vars": 0,
+      "no-console": "off",
+      "indent": 0,
+      "quotes": 0,
+      "linebreak-style": 0,
+      "semi": 0,
+      "space-before-function-paren": 0,
+      "no-useless-escape": 0,
+      "no-redeclare": 0,
+      "camelcase": 0,
+      "no-unneeded-ternary": 0
+    },
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
+  },
+  "node": {
+    "console": "empty",
+    "fs": "empty",
+    "net": "empty",
+    "tls": "empty"
+  }
+}
