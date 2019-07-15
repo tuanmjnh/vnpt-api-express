@@ -50,8 +50,10 @@ router
   .patch(contractCustomer.patch);
 
 // QRCode
-router.route('/qrcode').post(qrcode.getHDDT);
-
+router.route('/qrcode')
+  .get(qrcode.getKyHoaDon)
+  .post(qrcode.getHDDT);
+router.route('/qrcode/old').post(qrcode.getHDDTOld);
 // test
 router
   .route('/test/:id?')

@@ -10,7 +10,8 @@
   "license": "TM",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "build": "concurrently \"cross-env webpack --mode production\"",
+    "build:prod": "concurrently \"cross-env webpack --mode production\"",
+    "build": "concurrently \"webpack --mode production\"",
     "start": "node dist/server.js"
   },
   "dependencies": {
@@ -103,7 +104,8 @@
       "no-useless-escape": 0,
       "no-redeclare": 0,
       "camelcase": 0,
-      "no-unneeded-ternary": 0
+      "no-unneeded-ternary": 0,
+      "no-multiple-empty-lines": 0
     },
     "parserOptions": {
       "parser": "babel-eslint"

@@ -4,7 +4,7 @@ const webpack = require('webpack')
 const nodeExternals = require('webpack-node-externals')
 const HtmlWebPackPlugin = require("html-webpack-plugin")
 const CopyPlugin = require('copy-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+// const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 // var nodeModules = {}
 // fs.readdirSync('node_modules')
@@ -18,7 +18,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 module.exports = {
   entry: ['babel-polyfill', './src/index.js'],
   output: {
-    path: path.join(__dirname, 'dist'),
+    path: '/Application/vnptbkn.api.express', // ,path.join(__dirname, 'dist'),
     filename: 'server.js',
     publicPath: '/'
   },
@@ -56,7 +56,7 @@ module.exports = {
   },
   plugins: [
     new webpack.ProgressPlugin(),
-    new CleanWebpackPlugin(),
+    // new CleanWebpackPlugin(),
     new CopyPlugin([
       { from: './public/', to: './' },
       { from: './src/public/', to: './public/' },
