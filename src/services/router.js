@@ -6,7 +6,7 @@ const filemanager = require('../controllers/filemanager');
 const auth = require('../controllers/auth');
 const navigation = require('../controllers/navigation');
 const contractCustomer = require('../controllers/contract-customer');
-const qrcode = require('../controllers/qrcode');
+const hddt = require('../controllers/hddt');
 const test = require('../controllers/test');
 const test2 = require('../controllers/test2');
 // const employees = require('../controllers/employees.js');
@@ -50,10 +50,13 @@ router
   .patch(contractCustomer.patch);
 
 // QRCode
-router.route('/qrcode')
-  .get(qrcode.getKyHoaDon)
-  .post(qrcode.getHDDT);
-router.route('/qrcode/old').post(qrcode.getHDDTOld);
+router.route('/hddt')
+  .get(hddt.getKyHoaDon)
+  .post(hddt.getHDDT);
+router.route('/hddt/old').post(hddt.getHDDTOld);
+router.route('/hddt/dulieu').post(hddt.getHDDTDULIEU);
+router.route('/hddt/table').get(hddt.getTableHDDT);
+
 // test
 router
   .route('/test/:id?')
