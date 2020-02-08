@@ -1,5 +1,5 @@
-const dbapi = require("../db_apis/hddt");
-const helpers = require("../util/helpers");
+const dbapi = require('../db_apis/hddt');
+const helpers = require('../utils/helpers');
 
 module.exports.getHDDT = async function(req, res, next) {
   try {

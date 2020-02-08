@@ -1,6 +1,6 @@
-const db = require("../services/oracle");
-const model = require("../models/test");
-const helpers = require("../util/helpers");
+const db = require('../services/oracle');
+const model = require('../models/test');
+const helpers = require('../utils/helpers');
 
 module.exports.all = async function(context) {
   const result = db.knex
@@ -57,7 +57,7 @@ module.exports.patch = async function(id, context) {
 module.exports.delete = async function(id) {
   const result = await db
     .knex(model.Table)
-    .where(model.Key, "=", id)
+    .where(model.Key, '=', id)
     .del();
   return result;
 };

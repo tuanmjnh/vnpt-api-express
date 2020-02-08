@@ -1,19 +1,19 @@
 const oracledb = require('oracledb');
 const db = require('../services/oracle.js');
-const model = require("../models/test");
-const tmdb = require("../util/tm-db");
+const model = require('../models/test');
+const tmdb = require('../utils/tm-db');
 
-module.exports.all = async function (context) {
+module.exports.all = async function(context) {
   const result = await db.execute(tmdb.find(model.Table, model.Context, context), context);
   return result.rows;
 };
 
-module.exports.find = async function (context) {
+module.exports.find = async function(context) {
   const result = await db.execute(tmdb.find(model.Table, model.Context, context), context);
   return result.rows;
 };
 
-module.exports.create = async function (context) {
+module.exports.create = async function(context) {
   // get created_by
   const created_by = context.created_by;
   // declare outBinds
@@ -36,7 +36,7 @@ module.exports.create = async function (context) {
   else return null
 };
 
-module.exports.update = async function (context) {
+module.exports.update = async function(context) {
   // get updated_by
   const updated_by = context.updated_by;
   // declare outBinds
@@ -58,7 +58,7 @@ module.exports.update = async function (context) {
   else return null;
 };
 
-module.exports.updateFlag = async function (context, deleted_by) {
+module.exports.updateFlag = async function(context, deleted_by) {
   // build query
   const sql = tmdb.update(model.Table, context[0], { id: '' }, {
     updated_by: `(select ma_nd from admin_bkn.nguoidung where nguoidung_id=${deleted_by})`,
@@ -86,7 +86,7 @@ module.exports.updateFlag = async function (context, deleted_by) {
   else return null;
 };
 
-module.exports.delete = async function (context) {
+module.exports.delete = async function(context) {
   // build query
   const sql = tmdb.delete(model.Table, { id: '' });
   // execute query

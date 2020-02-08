@@ -1,7 +1,7 @@
-const dbapi = require("../db_apis/test2");
-const model = require("../models/test");
-const helpers = require("../util/helpers");
-module.exports.get = async function (req, res, next) {
+const dbapi = require('../db_apis/test2');
+const model = require('../models/test');
+const helpers = require('../utils/helpers');
+module.exports.get = async function(req, res, next) {
   try {
     // check req data
     if (req.params.id) {
@@ -27,7 +27,7 @@ module.exports.get = async function (req, res, next) {
   }
 };
 
-module.exports.post = async function (req, res, next) {
+module.exports.post = async function(req, res, next) {
   try {
     const body = helpers.body(model.Context, req);
     if (!body.created_by) {
@@ -47,7 +47,7 @@ module.exports.post = async function (req, res, next) {
   }
 };
 
-module.exports.put = async function (req, res, next) {
+module.exports.put = async function(req, res, next) {
   try {
     const body = helpers.body(model.Context, req);
     if (!req.params.id) {
@@ -70,7 +70,7 @@ module.exports.put = async function (req, res, next) {
   }
 }
 
-module.exports.patch = async function (req, res, next) {
+module.exports.patch = async function(req, res, next) {
   try {
     if (!Array.isArray(req.body)) req.body = [req.body];
     if (req.body.length < 1) {
@@ -102,7 +102,7 @@ module.exports.patch = async function (req, res, next) {
   }
 }
 
-module.exports.delete = async function (req, res, next) {
+module.exports.delete = async function(req, res, next) {
   try {
     if (req.params.id) {
       const result = await dbapi.delete(req.params.id);

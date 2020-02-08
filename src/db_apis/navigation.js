@@ -1,7 +1,7 @@
 const oracledb = require('oracledb');
 const db = require('../services/oracle.js');
-const model = require("../models/navigation");
-const helpers = require("../util/helpers");
+const model = require('../models/navigation');
+const helpers = require('../utils/helpers');
 
 const sql_select = `select ID "id",
 CODE "code",
@@ -27,18 +27,18 @@ STORE "store",
 APP_KEY "app_key"
 from ttkd_bkn.navigation`
 
-module.exports.all = async function (binds) {
+module.exports.all = async function(binds) {
   const result = await db.execute(sql_select, binds);
   return result.rows;
 };
 
-module.exports.find = async function (binds) {
+module.exports.find = async function(binds) {
   const sql = sql_select + ` where id=:id`;
   const result = await db.execute(sql, binds);
   return result.rows;
 };
 
-module.exports.create = async function (binds) {
+module.exports.create = async function(binds) {
   const sql = `insert into ttkd_bkn.navigation(
     code,dependent,levels,title,icon,image,url,url_plus,
     orders,descs,flag,push,go,store,app_key,created_by,created_at) values(
@@ -56,7 +56,7 @@ module.exports.create = async function (binds) {
   return binds
 };
 
-module.exports.update = async function (binds) {
+module.exports.update = async function(binds) {
   const sql = `update ttkd_bkn.navigation set
     dependent=:dependent,levels=:levels,title=:title,icon=:icon,image=:image,
     url=:url,url_plus=:url_plus,orders=:orders,descs=:descs,flag=:flag,
@@ -73,7 +73,7 @@ module.exports.update = async function (binds) {
   return binds
 };
 
-module.exports.patch = async function (binds) {
+module.exports.patch = async function(binds) {
   // checkAuth
   // query
   const sql = `update ttkd_bkn.navigation set
@@ -94,7 +94,7 @@ module.exports.patch = async function (binds) {
   return binds
 };
 
-module.exports.delete = async function (id) {
+module.exports.delete = async function(id) {
   const result = await db
     .knex(model.Table)
     .where(model.Key, id)

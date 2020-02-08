@@ -1,5 +1,5 @@
-const dbapi = require("../db_apis/common");
-const helpers = require("../util/helpers");
+const dbapi = require('../db_apis/common');
+const helpers = require('../utils/helpers');
 
 module.exports.exist = async function(req, res, next) {
   try {
@@ -25,7 +25,7 @@ module.exports.GenerationSelect = async function(req, res, next) {
     const data = await dbapi.getTable(req.body);
     let result = 'select ';
     Object.keys(data[0]).forEach(e => {
-      result += `\t${e} "${e.toLowerCase()}",\n`;
+      result += `\t${e} '${e.toLowerCase()}',\n`;
     });
     result = result.trim().substr(0, result.length - 2);
     result += `\nfrom ${req.body.table} ${req.body.where ? `\nwhere ${req.body.where}` : ''}`;
@@ -40,7 +40,7 @@ module.exports.GenerationModel = async function(req, res, next) {
     const data = await dbapi.getTable(req.body);
     let result = '{\n';
     Object.keys(data[0]).forEach(e => {
-      result += `\t${e.toLowerCase()}: "${e.toUpperCase()}",\n`;
+      result += `\t${e.toLowerCase()}: '${e.toUpperCase()}',\n`;
     });
     result = result.trim().substr(0, result.length - 2);
     result += `\n}`;
@@ -53,13 +53,13 @@ module.exports.GenerationModel = async function(req, res, next) {
 module.exports.getColumn = async function(req, res, next) {
   try {
     const data = await dbapi.getColumn({ v_table: req.body.table });
-    let table = `module.exports.Table = "${req.body.table.toUpperCase()}"`;
-    let key = `module.exports.Key = "ID"`;
+    let table = `module.exports.Table = '${req.body.table.toUpperCase()}'`;
+    let key = `module.exports.Key = 'ID'`;
     let context = `module.exports.Context = {\n`;
     let get_context = `module.exports.getContext = function (req) {\n\treturn {\n`;
     data.forEach(e => {
       // build context
-      context += `\t${e.column_name.toLowerCase()}: "${e.column_name.toUpperCase()}",\n`;
+      context += `\t${e.column_name.toLowerCase()}: '${e.column_name.toUpperCase()}',\n`;
       // build getContext
       get_context += `\t\t${e.column_name.toLowerCase()}: req.body.${e.column_name.toLocaleLowerCase()},\n`;
     });

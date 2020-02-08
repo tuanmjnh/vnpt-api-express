@@ -1,5 +1,9 @@
 const oracledb = require('oracledb');
 const oracleConfig = require('../config/oracle');
+const defaultThreadPoolSize = 4;
+// Increase thread pool size by poolMax
+process.env.UV_THREADPOOL_SIZE = oracleConfig.dulieubkn.poolMax + defaultThreadPoolSize;
+
 // const Cursor = require('./oracle-cursor');
 //
 // oracledb.maxRows = 10000;
@@ -7,7 +11,13 @@ const oracleConfig = require('../config/oracle');
 // Static connection
 // let connection;
 async function initialize() {
-  await oracledb.createPool(oracleConfig.dulieubkn);
+  try {
+    console.log('Initializing database module');
+    const x = await oracledb.createPool(oracleConfig.dulieubkn);
+  } catch (err) {
+    console.error(err);
+    process.exit(1); // Non-zero failure code
+  }
   // const pool = await oracledb.createPool(oracleConfig.dulieubkn);
   // connection = await pool.getConnection();
   // , function (err, pool) {
@@ -65,9 +75,9 @@ function executeMany(statement, binds = [], opts = {}) {
 
     try {
       conn = await oracledb.getConnection();
-
+      // console.log(binds)
       const result = await conn.executeMany(statement, binds, opts);
-
+      // console.log(result)
       resolve(result);
     } catch (err) {
       reject(err);
@@ -122,7 +132,9 @@ function executeCursors(statement, binds = [], opts = {}) {
     // oracledb.fetchAsString = [oracledb.CLOB];
     let conn;
     let sql = '';
-    Object.keys(binds).forEach(e => { sql += `:${e},`; })
+    Object.keys(binds).forEach(e => {
+      sql += `:${e},`;
+    })
     sql = `BEGIN\n${statement}(${sql.substr(0, sql.length - 1)});\nEND;`;
     try {
       conn = await oracledb.getConnection();
@@ -132,7 +144,7 @@ function executeCursors(statement, binds = [], opts = {}) {
       while ((row = await result.outBinds.cursor.getRow())) {
         rows.push(row);
       }
-      resolve(rows);
+      resolve({ cursor: rows, out: result.outBinds });
     } catch (err) {
       reject(err);
     } finally {
@@ -160,14 +172,14 @@ module.exports.GetOutBinds = GetOutBinds;
 async function fetchRowsFromRS(connection, resultSet, numRows) {
   return resultSet.getRows( // get numRows rows
     numRows,
-    function (err, rows) {
+    function(err, rows) {
       if (err) {
         console.log(err);
         doClose(connection, resultSet); // always close the ResultSet
       } else if (rows.length === 0) { // no rows, or no more rows
         doClose(connection, resultSet); // always close the ResultSet
       } else if (rows.length > 0) {
-        console.log("fetchRowsFromRS(): Got " + rows.length + " rows");
+        console.log('fetchRowsFromRS(): Got ' + rows.length + ' rows');
         console.log(rows);
         fetchRowsFromRS(connection, resultSet, numRows);
       }
@@ -177,7 +189,7 @@ module.exports.fetchRowsFromRS = fetchRowsFromRS;
 
 function doRelease(connection) {
   connection.close(
-    function (err) {
+    function(err) {
       if (err) { console.error(err.message); }
     });
 }
@@ -185,7 +197,7 @@ module.exports.doRelease = doRelease;
 
 function doClose(connection, resultSet) {
   resultSet.close(
-    function (err) {
+    function(err) {
       if (err) { console.error(err.message); }
       doRelease(connection);
     });

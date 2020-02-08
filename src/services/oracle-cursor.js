@@ -6,9 +6,9 @@
 // Distributed freely under MIT License <http://mutedsolutions.mit-license.org>
 // Copyright 2016 Muted Solutions, LLC. All Rights Reserved.
 
-const EventEmitter = require("events");
-const util = require("util");
-const _ = require("underscore");
+const EventEmitter = require('events');
+const util = require('util');
+const _ = require('underscore');
 
 // Config
 // ------
@@ -34,12 +34,12 @@ util.inherits(Cursor, EventEmitter);
 // Methods
 // -------
 
-Cursor.prototype.read = function (cb) {
+Cursor.prototype.read = function(cb) {
   var numRows = this.options.numRows;
   this._fetchRows(numRows, cb);
 };
 
-Cursor.prototype.close = function (cb) {
+Cursor.prototype.close = function(cb) {
   this.o_cursor.close((err) => {
     if (err) { return cb(err); }
     return cb();
@@ -49,9 +49,9 @@ Cursor.prototype.close = function (cb) {
 // Private API
 // -----------
 
-Cursor.prototype._fetchRows = function (numRows, done) {
+Cursor.prototype._fetchRows = function(numRows, done) {
   this.o_cursor.getRows(numRows, (err, rows) => {
-    if (err) { return this.emit("error", err); }
+    if (err) { return this.emit('error', err); }
 
     if (rows.length === 0) {
       return this.close(done);
@@ -59,18 +59,18 @@ Cursor.prototype._fetchRows = function (numRows, done) {
 
     rows.forEach((row) => {
       var rowData = this._getRowData(row);
-      this.emit("data", rowData);
+      this.emit('data', rowData);
     });
 
     this._fetchRows(numRows, done);
   });
 }
 
-Cursor.prototype._configure = function (metaData) {
+Cursor.prototype._configure = function(metaData) {
   this._columnConfig = metaData;
 };
 
-Cursor.prototype._getRowData = function (row) {
+Cursor.prototype._getRowData = function(row) {
   var rowData = {};
   row.forEach((dataPoint, index) => {
     var rowConfig = this._columnConfig[index];

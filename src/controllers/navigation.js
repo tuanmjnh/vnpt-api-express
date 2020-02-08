@@ -1,9 +1,9 @@
-const authapi = require("../db_apis/auth");
-const dbapi = require("../db_apis/navigation");
-const model = require("../models/navigation");
-const helpers = require("../util/helpers");
+const authapi = require('../db_apis/auth');
+const dbapi = require('../db_apis/navigation');
+const model = require('../models/navigation');
+const helpers = require('../utils/helpers');
 
-module.exports.get = async function (req, res, next) {
+module.exports.get = async function(req, res, next) {
   try {
     // check req data
     if (!req.params.id) {
@@ -28,7 +28,7 @@ module.exports.get = async function (req, res, next) {
   }
 }
 
-module.exports.post = async function (req, res, next) {
+module.exports.post = async function(req, res, next) {
   try {
     // check token
     const user = await authapi.getUserFromToken({ v_token: req.headers.authorization });
@@ -51,7 +51,7 @@ module.exports.post = async function (req, res, next) {
     next(err);
   }
 }
-module.exports.put = async function (req, res, next) {
+module.exports.put = async function(req, res, next) {
   try {
     // check params id
     req.params.id = parseInt(req.params.id, 10);
@@ -81,7 +81,7 @@ module.exports.put = async function (req, res, next) {
   }
 }
 
-module.exports.patch = async function (req, res, next) {
+module.exports.patch = async function(req, res, next) {
   try {
     const user = await authapi.getUserFromToken({ v_token: req.headers.authorization });
     if (!user) {
@@ -116,7 +116,7 @@ module.exports.patch = async function (req, res, next) {
   }
 }
 
-module.exports.delete = async function (req, res, next) {
+module.exports.delete = async function(req, res, next) {
   try {
     if (req.params.id) {
       const result = await dbapi.delete(req.params.id);

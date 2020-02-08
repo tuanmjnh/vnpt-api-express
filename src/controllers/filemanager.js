@@ -1,4 +1,4 @@
-const io = require('../util/io');
+const io = require('../utils/io');
 const multer = require('multer');
 
 const storage = multer.diskStorage({
