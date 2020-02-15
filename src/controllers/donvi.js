@@ -1,10 +1,13 @@
 const dbapi = require('../db_apis/donvi'),
+  dbapiAuth = require('../db_apis/auth'),
   middleware = require('../services/middleware')
 
 module.exports.select = async function(req, res, next) {
   try {
-    if (!middleware.verify(req, res)) return
-    let condition = ''
+    const verify = middleware.verify(req, res)
+    if (!verify) return
+    const user = await dbapiAuth.findNguoiDung({ nguoidung_id: verify.id })
+    let condition = user.length && user[0].donvi_id ? `donvi_id=${user[0].donvi_id}` : ''
     if (req.query.filter) {
       const filter = `like TTKD_BKN.CONVERTTOUNSIGN('%${req.query.filter}%',1)`
       condition += ` and (TTKD_BKN.CONVERTTOUNSIGN(ten_dv,1) ${filter} or 
@@ -23,7 +26,7 @@ module.exports.select = async function(req, res, next) {
       const rs = await dbapi.paging(options)
       if (rs) return res.status(200).json(rs).end()
     } else {
-      const rs = await dbapi.getAll({ condition: condition, order: 'DONVI_ID' })
+      const rs = await dbapi.getAll({ condition: condition, order: 'ten_dv' })
       if (rs) return res.status(200).json(rs).end()
     }
     return res.status(200).json({ rowsNumber: 0, data: [] }).end()

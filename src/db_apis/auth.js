@@ -47,6 +47,7 @@ module.exports.findNguoiDung = async function(context) {
     nv.chucdanh "chucdanh",
     nv.ngay_sn "ngay_sn",
     nv.ten_tn "ten_tn",
+    nv.donvi_id "donvi_id",
     r.name "roles",
     r.ID "roles_id"
     from admin_bkn.nguoidung nd,

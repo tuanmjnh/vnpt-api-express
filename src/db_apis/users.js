@@ -80,8 +80,8 @@ module.exports.find = async function(context, order) {
   if (keys.length) {
     sql += ' WHERE '
     keys.forEach(e => { sql += `"${e}"=:${e} AND ` })
+    sql = sql.substr(0, sql.length - 5)
   }
-  sql = sql.substr(0, sql.length - 5)
   if (order && order.length) sql += ` ORDER BY ${order}`
   sql = `select * from (${_sql}) ${sql}`
   const rs = await db.execute(sql, context)
@@ -91,7 +91,6 @@ module.exports.find = async function(context, order) {
 module.exports.getPassword = async function(context) {
   const sql = `SELECT CSS_BKN.GIAIMA_MK(MATKHAU)"matkhau" FROM ADMIN_BKN.NGUOIDUNG WHERE MA_ND=:ma_nd`
   const rs = await db.execute(sql, context)
-  console.log()
   if (rs.rows.length) return rs.rows[0]
   return { matkhau: '' }
 }

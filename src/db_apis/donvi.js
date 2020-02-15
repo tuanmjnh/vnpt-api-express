@@ -22,11 +22,15 @@ module.exports.getAll = async function(context) {
   return rs.rows
 }
 
-module.exports.find = async function(context) {
+module.exports.find = async function(context, order) {
   let sql = `${_sql} WHERE `
-  Object.keys(context).forEach(e => {
-    sql += `${e}=:${context[e]}`
-  })
+  const keys = Object.keys(context)
+  if (keys.length) {
+    sql += ' WHERE '
+    keys.forEach(e => { sql += `"${e}"=:${e} AND ` })
+    sql = sql.substr(0, sql.length - 5)
+  }
+  if (order && order.length) sql += ` ORDER BY ${order}`
   const rs = await db.execute(sql, context)
   return rs.rows
 }

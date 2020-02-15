@@ -54,7 +54,7 @@ module.exports.update = async function(context) {
 }
 
 module.exports.lock = async function(context) {
-  const sql = `UPDATE TTKD_BKN.ROLES SET flag=:flag WHERE id=:id`
+  const sql = `UPDATE TTKD_BKN.ROLES SET FLAG=DECODE(flag,1,0,1) WHERE id=:id`
   const rs = await db.execute(sql, context)
   if (rs.rowsAffected > 0) {
     context.deleted_at = new Date()

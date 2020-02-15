@@ -160,6 +160,36 @@ function executeCursors(statement, binds = [], opts = {}) {
 }
 module.exports.executeCursors = executeCursors;
 
+function executeStored(statement, binds = [], opts = {}) {
+  return new Promise(async (resolve, reject) => {
+    opts.outFormat = oracledb.OBJECT;
+    // binds.cursor = { type: oracledb.CURSOR, dir: oracledb.BIND_OUT }
+    // oracledb.fetchAsString = [oracledb.CLOB];
+    let conn;
+    let sql = '';
+    Object.keys(binds).forEach(e => {
+      sql += `:${e},`;
+    })
+    sql = `BEGIN\n${statement}(${sql.substr(0, sql.length - 1)});\nEND;`;
+    try {
+      conn = await oracledb.getConnection();
+      const result = await conn.execute(sql, binds, opts);
+      resolve(result.outBinds);
+    } catch (err) {
+      reject(err);
+    } finally {
+      if (conn) {
+        try {
+          await conn.close();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  });
+}
+module.exports.executeStored = executeStored;
+
 function GetOutBinds(result) {
   let rs = {}
   Object.keys(result.outBinds).forEach(e => {

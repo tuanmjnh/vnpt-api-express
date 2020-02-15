@@ -1,10 +1,14 @@
 const dbapi = require('../db_apis/users'),
+  dbapiAuth = require('../db_apis/auth'),
   middleware = require('../services/middleware')
 
 module.exports.select = async function(req, res, next) {
   try {
-    if (!middleware.verify(req, res)) return
+    const verify = middleware.verify(req, res)
+    if (!verify) return
+    const user = await dbapiAuth.findNguoiDung({ nguoidung_id: verify.id })
     let condition = `trangthai>=${!req.query.trangthai ? 1 : req.query.trangthai}`
+    condition += user.length && user[0].donvi_id ? ` and nv.donvi_id=${user[0].donvi_id}` : ''
     if (req.query.filter) {
       const filter = `like TTKD_BKN.CONVERTTOUNSIGN('%${req.query.filter}%',1)`
       condition += ` and (ma_nd ${filter} or TTKD_BKN.CONVERTTOUNSIGN(ten_nd,1) ${filter} or ma_nv ${filter} or TTKD_BKN.CONVERTTOUNSIGN(ten_nv,1) ${filter})`
