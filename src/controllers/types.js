@@ -100,7 +100,7 @@ module.exports.delete = async function(req, res, next) {
       code: req.body.code
     }
     const rs = await dbapi.delete(context)
-    if (rs) return res.status(203).json(rs).end()
+    if (rs) return res.status(204).json(rs).end()
     return res.status(200).json([]).end()
   } catch (e) {
     return res.status(500).send('invalid')

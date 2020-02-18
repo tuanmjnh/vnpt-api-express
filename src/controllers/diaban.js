@@ -194,3 +194,27 @@ module.exports.updateDBPho = async function(req, res, next) {
     return res.status(500).send('invalid')
   }
 }
+
+// Cập nhật PHO_ID của TINHCUOC_BKN.DBTB_[Kỳ cước] từ PHO_ID của DB_THUEBAO
+module.exports.updatePhoCuoc = async function(req, res, next) {
+  try {
+    if (!middleware.verify(req, res)) return
+    await dbapi.updatePhoCuoc()
+    return res.status(202).json(true).end()
+  } catch (e) {
+    console.log(e)
+    return res.status(500).send('invalid')
+  }
+}
+
+// Cập nhật DOITUONG_ID của TINHCUOC_BKN.DBTB_[Kỳ cước] từ DOITUONG_ID của DB_THUEBAO
+module.exports.updateDoiTuongCuoc = async function(req, res, next) {
+  try {
+    if (!middleware.verify(req, res)) return
+    await dbapi.updateDoiTuongCuoc()
+    return res.status(202).json(true).end()
+  } catch (e) {
+    console.log(e)
+    return res.status(500).send('invalid')
+  }
+}

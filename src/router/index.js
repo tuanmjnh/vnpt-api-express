@@ -8,6 +8,7 @@ const users = require('../controllers/users')
 const nhanvien = require('../controllers/nhanvien')
 const roles = require('../controllers/roles')
 const types = require('../controllers/types')
+const command = require('../controllers/command')
 const donvi = require('../controllers/donvi')
 const diaban = require('../controllers/diaban')
 const loainv = require('../controllers/loai-nv')
@@ -73,6 +74,14 @@ router.route('/types')
   .patch(types.lock)
   .delete(types.delete)
 
+// Command
+router.route('/command')
+  .get(command.select)
+  .post(command.insert)
+  .put(command.update)
+  .patch(command.lock)
+  .delete(command.delete)
+
 // Đơn vị
 router.route('/donvi')
   .get(donvi.select)
@@ -95,6 +104,8 @@ router.route('/diaban/update-pho-like').put(diaban.updateDBPhoLike)
 router.route('/diaban/update-quan').put(diaban.updateDBQuan)
 router.route('/diaban/update-phuong').put(diaban.updateDBPhuong)
 router.route('/diaban/update-pho').put(diaban.updateDBPho)
+router.route('/diaban/update-pho-cuoc').put(diaban.updatePhoCuoc)
+router.route('/diaban/update-doituong-cuoc').put(diaban.updateDoiTuongCuoc)
 
 // Loại nhân viên
 router.route('/loai-nv').get(loainv.select)

@@ -140,3 +140,25 @@ module.exports.updateDBPho = async function(context, order) {
   const rs = await db.executeStored('DULIEU_BKN.BKN_DIABAN_UPDATE_DB_PHOID')
   return rs.rows
 }
+
+// Cập nhật PHO_ID của TINHCUOC_BKN.DBTB_[Kỳ cước] từ PHO_ID của DB_THUEBAO
+module.exports.updatePhoCuoc = async function(context, order) {
+  let sql = `UPDATE(
+    SELECT tb.THUEBAO_ID,dc.PHO_ID new,C.PHO_ID old FROM CSS_BKN.DB_THUEBAO tb,CSS_BKN.DIACHI_TB dctb,CSS_BKN.DIACHI dc,TINHCUOC_BKN.DBTB_20200101 c
+    WHERE tb.THUEBAO_ID=dctb.THUEBAO_ID AND dctb.DIACHI_ID=dc.DIACHI_ID 
+    AND tb.THUEBAO_ID=c.THUEBAO_ID AND dc.PHO_ID!=C.PHO_ID
+    )t SET t.old=T.new`
+  const rs = await db.execute(sql)
+  return rs.rows
+}
+
+// Cập nhật DOITUONG_ID của TINHCUOC_BKN.DBTB_[Kỳ cước] từ DOITUONG_ID của DB_THUEBAO
+module.exports.updateDoiTuongCuoc = async function(context, order) {
+  let sql = `UPDATE(
+    SELECT tb.THUEBAO_ID,tb.DOITUONG_ID new,C.DOITUONG_ID old FROM CSS_BKN.DB_THUEBAO tb,tinhcuoc_bkn.dbtb_20200101 c
+    WHERE tb.THUEBAO_ID=c.THUEBAO_ID AND dc.DOITUONG_ID!=C.DOITUONG_ID
+    --AND tb.THUEBAO_ID=12050447
+    )t SET t.old=T.new`
+  const rs = await db.execute(sql)
+  return rs.rows
+}
