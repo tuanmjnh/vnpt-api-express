@@ -1,10 +1,9 @@
 const fs = require('fs'),
   path = require('path')
-console.log(process.env.PUBLIC_PATH)
 // const public_path = `${process.env.ROOT_PATH}\\public`// `${__dirname}\\..\\public\\`
 // const public_path = path.join(__dirname, `..\\${process.env.PUBLIC_DIR}`)
 // module.exports.public_path = public_path
-const upload_path = `${process.env.PUBLIC_PATH}\\${process.env.UPLOAD_DIR}`
+const upload_path = process.env.UPLOAD_DIR
 // module.exports.upload_path = upload_path
 // console.log(public_path)
 module.exports.createDir = async function(opts) {
@@ -141,7 +140,7 @@ module.exports.getAllDirectories = getAllDirectories
 
 function getFiles(result, dir_path) {
   result = result || []
-  const root = process.env.PUBLIC_PATH
+  const root = process.env.PUBLIC_DIR
   const dir = fs.readdirSync(`${root}\\${dir_path}`)
   for (var i in dir) {
     const _path = `${root}\\${dir_path}\\${dir[i]}`

@@ -1,4 +1,5 @@
 const oracledb = require('oracledb');
+// https://github.com/oracle/node-oracledb/blob/master/doc/api.md
 const oracleConfig = require('../config/oracle');
 const defaultThreadPoolSize = 4;
 // Increase thread pool size by poolMax
@@ -235,16 +236,16 @@ function doClose(connection, resultSet) {
 module.exports.doClose = doClose;
 
 // knex
-const knex = require('knex')({
-  client: 'oracledb',
-  connection: {
-    host: oracleConfig.dulieubkn_knex.host,
-    user: oracleConfig.dulieubkn_knex.user,
-    password: oracleConfig.dulieubkn_knex.password,
-    database: oracleConfig.dulieubkn_knex.database
-  },
-  pool: oracleConfig.dulieubkn_knex.pool
-});
+// const knex = require('knex')({
+//   client: 'oracledb',
+//   connection: {
+//     host: oracleConfig.dulieubkn_knex.host,
+//     user: oracleConfig.dulieubkn_knex.user,
+//     password: oracleConfig.dulieubkn_knex.password,
+//     database: oracleConfig.dulieubkn_knex.database
+//   },
+//   pool: oracleConfig.dulieubkn_knex.pool
+// });
 
 // var knex = require('knex')({
 //   client: 'oracledb',
@@ -262,4 +263,4 @@ const knex = require('knex')({
 
 // knex.destroy();
 
-module.exports.knex = knex;
+// module.exports.knex = knex;

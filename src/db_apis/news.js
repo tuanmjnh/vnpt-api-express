@@ -1,4 +1,3 @@
-const oracledb = require('oracledb')
 const db = require('../services/oracle.js')
 
 const _sql = `SELECT ID "id",
@@ -6,7 +5,7 @@ APP_KEY "app_key",
 GROUP_ID "group_id",
 TITLE "title",
 ICON "icon",
-IMAGE "name",
+IMAGE "image",
 URL "url",
 ORDERS "orders",
 QUANTITY "quantity",
@@ -48,7 +47,8 @@ module.exports.insert = async function(context) {
        VALUES(:app_key,:group_id,:title,:icon,:image,:url,:orders,:quantity,
       :descs,:content,:attach,:tags,:created_ip,:created_by,SYSDATE,:flag)
     returning id into :id`
-  context.id = { type: oracledb.STRING, dir: oracledb.BIND_OUT }
+  // context.id = { type: oracledb.STRING, dir: oracledb.BIND_OUT }
+  context.id = { type: 2001, dir: 3003 }// BIND_OUT
   const rs = await db.execute(sql, context)
   if (rs.rowsAffected > 0) {
     context.created_at = new Date()
@@ -60,10 +60,9 @@ module.exports.insert = async function(context) {
 }
 
 module.exports.update = async function(context) {
-  // APP_KEY=:app_key,CODE=:code,
-  const sql = `UPDATE TTKD_BKN.ITEMS SET GROUP_ID=:group_id,TITLE=:title,ICON=:icon,IMAGE=:image,URL=:url,
-  ORDERS=:orders,QUANTITY=:quantity,DESCS=:descs,CONTENT=:content,ATTACH=:attach,TAGS=:tags,
-  UPDATED_IP=:updated_ip,UPDATED_BY:updated_by,UPDATED_AT=SYSDATE,FLAG::flag
+  const sql = `UPDATE TTKD_BKN.ITEMS SET APP_KEY=:app_key,GROUP_ID=:group_id,TITLE=:title,ICON=:icon,
+  IMAGE=:image,URL=:url,ORDERS=:orders,QUANTITY=:quantity,DESCS=:descs,CONTENT=:content,ATTACH=:attach,
+  TAGS=:tags,UPDATED_IP=:updated_ip,UPDATED_BY=:updated_by,UPDATED_AT=SYSDATE,FLAG=:flag
   WHERE ID=:id`
   const rs = await db.execute(sql, context)
   if (rs.rowsAffected > 0) {

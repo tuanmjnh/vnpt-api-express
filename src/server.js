@@ -1,7 +1,12 @@
-const path = require('path')
+// const path = require('path')
 process.env.ROOT_PATH = __dirname // Root path
-process.env.PUBLIC_PATH = path.join(__dirname, 'public')
-process.env.UPLOAD_DIR = 'uploads'
+process.env.PUBLIC_PATH = 'public'
+process.env.STATIC_PATH = 'static'
+process.env.UPLOAD_PATH = 'uploads'
+//
+process.env.PUBLIC_DIR = `${process.env.ROOT_PATH}/${process.env.PUBLIC_PATH}`// path.join(__dirname, 'public')
+process.env.STATIC_DIR = `${process.env.PUBLIC_DIR}/${process.env.STATIC_PATH}`
+process.env.UPLOAD_DIR = `${process.env.PUBLIC_DIR}/${process.env.UPLOAD_PATH}`
 
 const express = require('express'),
   bodyParser = require('body-parser'),
@@ -15,7 +20,7 @@ const express = require('express'),
 
 // Load environment variables from .env file, where API keys and passwords are configured
 require('dotenv').config({
-  path: `.env.${process.env.NODE_ENV}`
+  path: !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? '.env' : `.env.${process.env.NODE_ENV}`
 })
 
 // console.log(process.env.ROOT_PATH)
@@ -33,9 +38,10 @@ const app = express()
 app.set('trust proxy', true)
 // static public
 // app.use(express.static(process.env.PUBLIC_PATH, { maxAge: 31557600000 }))
-app.use('/public', express.static(path.join(__dirname, 'public')))
-app.use('/static', express.static(path.join(__dirname, 'public') + '/static'))
-app.use('/uploads', express.static(path.join(__dirname, 'public') + '/uploads'))
+// app.use('/public', express.static(path.join(__dirname, 'public')))
+app.use(`${process.env.BASE_URL}public`, express.static(process.env.PUBLIC_DIR))
+app.use(`${process.env.BASE_URL}static`, express.static(process.env.STATIC_DIR))
+app.use(`${process.env.BASE_URL}uploads`, express.static(process.env.UPLOAD_DIR))
 // bodyParser
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))

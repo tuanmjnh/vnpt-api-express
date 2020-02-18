@@ -136,56 +136,32 @@ module.exports.update = async function(req, res, next) {
 }
 
 module.exports.lock = async function(req, res, next) {
-  // try {
-  //   const verify = middleware.verify(req, res)
-  //   if (!verify) return
-  //   let rs = { success: [], error: [] }
-  //   for await (let _id of req.body._id) {
-  //     // if (!validate.isBoolean(req.body.disabled)) {
-  //     //   rs.error.push(id)
-  //     //   continue
-  //     // }
-  //     const x = await Model.findById(_id)
-  //     if (x) {
-  //       var _x = await Model.updateOne({ _id: _id }, { $set: { enable: x.enable === true ? false : true } })
-  //       if (_x.nModified) {
-  //         rs.success.push(_id)
-  //         // Push logs
-  //         logs.push(req, { user_id: verify._id, collection: 'users', collection_id: _id, method: (x.enable === true ? 'lock' : 'unlock') })
-  //       } else rs.error.push(_id)
-  //     }
-  //   }
-  //   return res.status(203).json(rs)
-  //   // if (!validate.isBoolean(req.body.disabled)) return res.status(500).send('invalid')
-  //   // if (mongoose.Types.ObjectId.isValid(req.params.id)) {
-  //   //   Model.updateOne({ _id: req.params.id }, { $set: { disabled: req.body.disabled } }, (e, rs) => {
-  //   //     if (e) return res.status(500).send(e)
-  //   //     if (!rs) return res.status(404).send('no_exist')
-  //   //     return res.status(203).json(rs)
-  //   //   })
-  //   // } else {
-  //   //   return res.status(500).send('invalid')
-  //   // }
-  // } catch (e) {
-  //   return res.status(500).send('invalid')
-  // }
+  try {
+    const verify = middleware.verify(req, res)
+    if (!verify) return
+    const context = []
+    for await (let e of req.body.data) {
+      context.push({ id: e })
+    }
+    const rs = await dbapi.lock(context)
+    if (rs) return res.status(203).json(rs).end()
+    return res.status(200).json([]).end()
+  } catch (e) {
+    return res.status(500).send('invalid')
+  }
 }
 
 module.exports.delete = async function(req, res, next) {
-  // try {
-  //   const verify = middleware.verify(req, res)
-  //   if (!verify) return
-  //   if (mongoose.Types.ObjectId.isValid(req.params._id)) {
-  //     Model.deleteOne({ _id: req.params._id }, (e, rs) => {
-  //       if (e) return res.status(500).send(e)
-  //       // Push logs
-  //       logs.push(req, { user_id: verify._id, collection: 'users', collection_id: req.params._id, method: 'delete' })
-  //       return res.status(204).json(rs)
-  //     })
-  //   } else {
-  //     return res.status(500).send('invalid')
-  //   }
-  // } catch (e) {
-  //   return res.status(500).send('invalid')
-  // }
+  try {
+    const verify = middleware.verify(req, res)
+    if (!verify) return
+    const context = {
+      id: req.body.id
+    }
+    const rs = await dbapi.delete(context)
+    if (rs) return res.status(203).json(rs).end()
+    return res.status(200).json([]).end()
+  } catch (e) {
+    return res.status(500).send('invalid')
+  }
 }

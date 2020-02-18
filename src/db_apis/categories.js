@@ -1,4 +1,3 @@
-const oracledb = require('oracledb')
 const db = require('../services/oracle.js')
 
 const _sql = `SELECT ID "id",
@@ -53,7 +52,7 @@ module.exports.insert = async function(context) {
        VALUES(:app_key,:code,:dependent,:levels,:title,:icon,:image,:url,:orders,:quantity,:position,
       :descs,:content,:tags,:attach,:start_at,:end_at,:created_ip,:created_by,SYSDATE,:flag)
     returning id into :id`
-  context.id = { type: oracledb.STRING, dir: oracledb.BIND_OUT }
+  context.id = { type: 2001, dir: 3003 }// BIND_OUT
   const rs = await db.execute(sql, context)
   if (rs.rowsAffected > 0) {
     context.created_at = new Date()

@@ -16,7 +16,8 @@ const CopyPlugin = require('copy-webpack-plugin');
 //   })
 
 module.exports = {
-  entry: ['babel-polyfill', './src/index.js'],
+  // entry: ['babel-polyfill', './src/index.js'],
+  entry: ['babel-polyfill', './src/server.js'],
   output: {
     path: '/Application/vnptbkn.express', // ,path.join(__dirname, 'dist'),
     filename: 'server.js',

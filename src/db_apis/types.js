@@ -1,4 +1,3 @@
-const oracledb = require('oracledb')
 const db = require('../services/oracle.js')
 
 const _sql = `SELECT key "key",code "code",title "title",orders "orders",flag "flag" FROM TTKD_BKN.APP_KEY`
@@ -18,7 +17,8 @@ module.exports.insert = async function(context) {
   const sql = `INSERT INTO TTKD_BKN.APP_KEY(KEY,CODE,TITLE,ORDERS,FLAG)
     VALUES(:key,:code,:title,:orders,:flag)
     returning key into :key`
-  context.id = { type: oracledb.STRING, dir: oracledb.BIND_OUT }
+  // context.id = { type: oracledb.STRING, dir: oracledb.BIND_OUT }
+  context.id = { type: 2001, dir: 3003 }// BIND_OUT
   const rs = await db.execute(sql, context)
   if (rs.rowsAffected > 0) {
     context.created_at = new Date()

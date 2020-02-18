@@ -39,12 +39,13 @@ module.exports.get = async function(req, res, next) {
 module.exports.post = async function(req, res, next) {
   try {
     const result = [];// await dbapi.create(body);
+    const uploadPath = `${process.env.UPLOAD_PATH}/${req.headers['upload-path']}`
     for (const e of req.files) {
       result.push({
-        path: req.headers['upload-path'],
+        path: uploadPath,
         size: e.size,
-        filename: e.filename,
-        fullName: `${req.headers['upload-path']}/${e.filename}`,
+        fileName: e.filename,
+        fullName: `${uploadPath}/${e.filename}`,
         ext: io.getExtention(e.filename),
         mimetype: e.mimetype
       })

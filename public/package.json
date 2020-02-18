@@ -3,32 +3,38 @@
   "version": "1.0.0",
   "description": "Vnpt api express",
   "main": "server.js",
+  "author": "",
+  "license": "tuanmjnh",
   "repository": {
     "type": "git",
     "url": "https://github.com/tuanmjnh/vnpt-api-express"
   },
-  "dependencies": {
-    "babel-polyfill": "^6.26.0",
-    "compression": "^1.7.4",
-    "cors": "^2.8.5",
-    "dotenv": "^8.0.0",
-    "express": "^4.17.1",
-    "express-flash": "^0.0.2",
-    "express-session": "^1.16.2",
-    "express-validator": "^6.1.1",
-    "jsonwebtoken": "^8.5.1",
-    "knex": "^0.18.3",
-    "lusca": "^1.6.1",
-    "moment": "^2.24.0",
-    "multer": "^1.4.1",
-    "oracledb": "^3.1.2",
-    "underscore": "^1.9.1"
-  },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "author": "",
-  "license": "ISC"
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dotenv": "^4.0.0",
+    "express": "^4.17.1",
+    "express-flash": "0.0.2",
+    "express-session": "^1.17.0",
+    "express-validator": "^4.3.0",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
+    "lusca": "^1.5.2",
+    "moment": "^2.24.0",
+    "multer": "^1.4.2",
+    "oracledb": "^4.2.0"
+  },
+  "devDependencies": {},
+  "node": {
+    "console": "empty",
+    "fs": "empty",
+    "net": "empty",
+    "tls": "empty"
+  }
 }

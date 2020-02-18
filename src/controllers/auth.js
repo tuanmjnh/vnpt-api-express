@@ -46,7 +46,7 @@ module.exports.post = async function(req, res, next) {
     // check lock
     if (rs[0].trangthai < 1) return res.status(401).json({ msg: 'locked' }).end()
     // Token
-    const token = middleware.sign({ id: rs[0].nguoidung_id, code: rs[0].ma_nd })
+    const token = middleware.sign({ id: rs[0].nguoidung_id, code: rs[0].ma_nd, ma_nv: rs[0].ma_nv, donvi_id: rs[0].donvi_id })
     // Update last login
     await dbapi.updateAuth({
       last_login: new Date(),

@@ -21,7 +21,8 @@ module.exports.insert = async function(context) {
   const sql = `INSERT INTO TTKD_BKN.ROLES(ID,NAME,ORDERS,DESCS,CREATED_BY,CREATED_AT,FLAG,COLOR,CODE,LEVELS,ROLES
     VALUES(SYS_GUID(),:name,:orders,:descs,:created_by,SYSDATE,:flag,:color,:code,:levels,:roles)
     returning id into :id`
-  context.id = { type: oracledb.STRING, dir: oracledb.BIND_OUT }
+  // context.id = { type: oracledb.STRING, dir: oracledb.BIND_OUT }
+  context.id = { type: 2001, dir: 3003 }// BIND_OUT
   console.log(context)
   const rs = await db.execute(sql, context)
   if (rs.rowsAffected > 0) {

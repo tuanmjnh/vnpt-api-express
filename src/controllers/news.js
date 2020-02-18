@@ -84,6 +84,7 @@ module.exports.update = async function(req, res, next) {
     if (!verify) return
     if (!req.body || Object.keys(req.body).length < 1) return res.status(500).send('invalid')
     const context = {
+      id: req.body.id,
       app_key: req.body.app_key,
       group_id: req.body.group_id,
       title: req.body.title,
@@ -130,8 +131,7 @@ module.exports.delete = async function(req, res, next) {
     const verify = middleware.verify(req, res)
     if (!verify) return
     const context = {
-      key: req.body.key,
-      code: req.body.code
+      id: req.body.id
     }
     const rs = await dbapi.delete(context)
     if (rs) return res.status(203).json(rs).end()

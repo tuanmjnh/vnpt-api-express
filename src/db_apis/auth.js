@@ -6,11 +6,15 @@ module.exports.getNguoidung = async function(context) {
               nd.ma_nd "ma_nd",
               nd.matkhau "matkhau",
               css_bkn.giaima_mk(nd.matkhau) "giaima_mk",
-              nd.trangthai "trangthai"
+              nd.trangthai "trangthai",
+              nv.ma_nv ma_nv,
+              nv.donvi_id "donvi_id"
               from admin_bkn.nguoidung nd,
+              admin_bkn.nhanvien nv,
               ttkd_bkn.nguoidung tnd,
               ttkd_bkn.roles r
-              where nd.nguoidung_id=tnd.nguoidung_id(+)
+              WHERE nd.nhanvien_id=nv.nhanvien_id
+              and nd.nguoidung_id=tnd.nguoidung_id(+)
               and tnd.roles_id=r.id(+)
               and nd.ma_nd=:username`;
   const rs = await db.execute(sql, context);
