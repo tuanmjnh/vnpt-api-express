@@ -199,7 +199,9 @@ module.exports.updateDBPho = async function(req, res, next) {
 module.exports.updatePhoCuoc = async function(req, res, next) {
   try {
     if (!middleware.verify(req, res)) return
-    await dbapi.updatePhoCuoc()
+    req.body.kycuoc = moment(req.body.kycuoc, 'YYYYMMDD').format('YYYYMMDD')
+    if (req.body.kycuoc === 'Invalid date') res.status(500).send('invalid')
+    await dbapi.updatePhoCuoc({ vkycuoc: req.body.kycuoc })
     return res.status(202).json(true).end()
   } catch (e) {
     console.log(e)
@@ -211,7 +213,9 @@ module.exports.updatePhoCuoc = async function(req, res, next) {
 module.exports.updateDoiTuongCuoc = async function(req, res, next) {
   try {
     if (!middleware.verify(req, res)) return
-    await dbapi.updateDoiTuongCuoc()
+    req.body.kycuoc = moment(req.body.kycuoc, 'YYYYMMDD').format('YYYYMMDD')
+    if (req.body.kycuoc === 'Invalid date') res.status(500).send('invalid')
+    await dbapi.updateDoiTuongCuoc({ vkycuoc: req.body.kycuoc })
     return res.status(202).json(true).end()
   } catch (e) {
     console.log(e)

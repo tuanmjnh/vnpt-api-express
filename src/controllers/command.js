@@ -25,7 +25,7 @@ module.exports.select = async function(req, res, next) {
       if (rs) return res.status(200).json({ data: rs.cursor, rowsNumber: rs.out.v_total }).end()
     } else {
       const rs = await db.execute(`${sql} WHERE ${condition}`)
-      if (rs) return res.status(200).json(rs).end()
+      if (rs) return res.status(200).json(rs.rows).end()
     }
     return res.status(200).json({ rowsNumber: 0, data: [] }).end()
   } catch (e) {

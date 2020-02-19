@@ -71,30 +71,38 @@ module.exports.find = async function(req, res, next) {
 }
 
 module.exports.insert = async function(req, res, next) {
-  // try {
-  //   const verify = middleware.verify(req, res)
-  //   if (!verify) return
-  //   if (!req.body || Object.keys(req.body).length < 1 || !req.body.email) {
-  //     return res.status(500).send('invalid')
-  //   }
-  //   const x = await Model.findOne({ email: req.body.email })
-  //   if (x) return res.status(501).send('exist')
-  //   const password = crypto.NewGuid().split('-')[0]
-  //   req.body.salt = crypto.NewGuid('n')
-  //   req.body.password = crypto.md5(password + req.body.salt)
-  //   req.body.created = { at: new Date(), by: verify._id, ip: ip.get(req) }
-  //   const data = new Model(req.body)
-  //   data.validate()
-  //   data.save((e, rs) => {
-  //     if (e) return res.status(500).send(e)
-  //     rs.password = password
-  //     // Push logs
-  //     logs.push(req, { user_id: verify._id, collection: 'users', collection_id: rs._id, method: 'insert' })
-  //     return res.status(201).json(rs)
-  //   })
-  // } catch (e) {
-  //   return res.status(500).send('invalid')
-  // }
+  try {
+    const verify = middleware.verify(req, res)
+    if (!verify) return
+    if (!req.body || Object.keys(req.body).length < 1) return res.status(500).send('invalid')
+    const context = {
+      name: req.body.name,
+      orders: req.body.orders,
+      descs: req.body.descs,
+      created_by: verify.code,
+      flag: req.body.flag,
+      color: req.body.color,
+      code: req.body.code,
+      levels: req.body.levels,
+      roles: req.body.roles
+    }
+    const rs = await dbapi.insert(context)
+    if (rs) {
+      let routes = []
+      req.body.routes.forEach(e => {
+        routes.push({
+          role_id: rs.id,
+          route: e
+        })
+      })
+      await dbapi.insertRoleRoute(routes)
+    }
+    if (rs) return res.status(201).json(rs).end()
+    return res.status(200).json([]).end()
+  } catch (e) {
+    console.log(e)
+    return res.status(500).send('invalid')
+  }
 }
 
 module.exports.update = async function(req, res, next) {

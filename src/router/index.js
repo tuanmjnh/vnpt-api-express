@@ -13,6 +13,7 @@ const donvi = require('../controllers/donvi')
 const diaban = require('../controllers/diaban')
 const loainv = require('../controllers/loai-nv')
 const billing = require('../controllers/billing')
+const pttb = require('../controllers/pttb')
 const categories = require('../controllers/categories')
 const news = require('../controllers/news')
 const business = require('../controllers/business')
@@ -111,6 +112,9 @@ router.route('/diaban/update-doituong-cuoc').put(diaban.updateDoiTuongCuoc)
 router.route('/loai-nv').get(loainv.select)
 // Cước
 router.route('/billing/get-kycuoc').get(billing.getKyCuoc)
+// PTTB
+router.route('/pttb/tuyen-thu').get(pttb.getTuyenThu)
+router.route('/pttb/tuyen-thu').put(pttb.updateTuyenThu)
 
 // Danh mục
 router.route('/categories')
