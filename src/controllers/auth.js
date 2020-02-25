@@ -49,8 +49,8 @@ module.exports.post = async function(req, res, next) {
     const token = middleware.sign({ id: rs[0].nguoidung_id, code: rs[0].ma_nd, ma_nv: rs[0].ma_nv, donvi_id: rs[0].donvi_id })
     // Update last login
     await dbapi.updateAuth({
-      last_login: new Date(),
-      token: token,
+      // last_login: new Date(),
+      // token: token,
       nguoidung_id: rs[0].nguoidung_id
     })
     // Return

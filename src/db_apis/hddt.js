@@ -1,7 +1,7 @@
 const db = require('../services/oracle.js');
 
-module.exports.getHDDT = async function(context) {
-  let sql = `select THANG "thang",
+module.exports.getData = async function(context) {
+  let sql = `SELECT THANG "thang",
     NAM "nam",
     CHUKY "chuky",
     TEN_TT "ten_tt",
@@ -19,7 +19,7 @@ module.exports.getHDDT = async function(context) {
     TIEN "tien",
     VAT "vat",
     TONG "tong",
-    css_bkn.doisosangchu(TONG) "tong_chu",
+    ${process.env.DB_SCHEMA_CSS}.doisosangchu(TONG) "tong_chu",
     CANTRU "cantru",
     TONG_PT "tong_pt",
     MANV_TC "manv_tc",
@@ -36,11 +36,10 @@ module.exports.getHDDT = async function(context) {
     TEN_DONVI_QL "ten_donvi_ql",
     STK "stk",
     PATTERN "pattern"
-from bcss_bkn.hddt_ezpay_${context.kyhoadon}`
+  FROM ${context.table}`
   if (context.ma_tt && context.ma_tt.length > 0) {
-    sql += ` where ma_tt in('${context.ma_tt.join('\',\'')}')`
+    sql += ` WHERE ma_tt IN('${context.ma_tt.join('\',\'')}')`
   }
-  // console.log(context.ma_tt)
   const result = await db.execute(sql)
   return result.rows
 };

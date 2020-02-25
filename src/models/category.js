@@ -1,0 +1,32 @@
+const Model = require('../utils/tm-oracle')
+
+module.exports = new Model(`${process.env.DB_SCHEMA_TTKD}.GROUPS`, {
+  id: { type: String, key: true, auto: true },
+  app_key: String,
+  code: String,
+  dependent: Number,
+  levels: Number,
+  title: String,
+  icon: String,
+  image: String,
+  url: String,
+  orders: Number,
+  quantity: Number,
+  position: String,
+  descs: String,
+  content: String,
+  tags: String,
+  attach: String,
+  start_at: Date,
+  end_at: Date,
+  created_by: String,
+  created_at: { type: Date, autoDate: true },
+  created_ip: String,
+  updated_by: String,
+  updated_at: { type: Date, autoDate: true },
+  updated_ip: String,
+  deleted_by: String,
+  deleted_at: { type: Date, autoDate: true },
+  deleted_ip: String,
+  flag: Number
+})

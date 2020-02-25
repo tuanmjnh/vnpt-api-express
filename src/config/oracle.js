@@ -44,4 +44,4 @@ module.exports = {
     database: 'BACKAN',
     pool: { min: 0, max: 1 }
   }
-};
+}

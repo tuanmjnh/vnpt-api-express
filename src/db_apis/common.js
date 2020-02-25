@@ -1,9 +1,8 @@
-const oracledb = require('oracledb');
 const db = require('../services/oracle.js');
 
 module.exports.exist = async function (context) {
   // const sql = `ttkd_bkn.check_exist(:v_table,:v_column,:v_value,:v_condition)`;
-  const result = await db.executeCursor('ttkd_bkn.check_exist', context);
+  const result = await db.executeCursor(`${process.env.DB_SCHEMA_TTKD}.check_exist`, context);
   return result;
 };
 
@@ -14,7 +13,7 @@ module.exports.getTable = async function (context) {
 };
 
 module.exports.getColumn = async function (context) {
-  const result = await db.executeCursors('ttkd_bkn.get_column', context);
+  const result = await db.executeCursors(`${process.env.DB_SCHEMA_TTKD}.get_column`, context);
   return result;
 };
 

@@ -1,7 +1,7 @@
 const db = require('../services/oracle.js')
 
 module.exports.select = async function(context, order) {
-  let sql = `SELECT id "id",loai_nv "loai_nv" FROM TTKD_BKN.LOAI_NV`
+  let sql = `SELECT id "id",loai_nv "loai_nv" FROM ${process.env.DB_SCHEMA_TTKD}.LOAI_NV`
   const keys = Object.keys(context)
   if (keys.length) {
     sql += ' WHERE '

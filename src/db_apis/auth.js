@@ -1,18 +1,17 @@
-const oracledb = require('oracledb');
 const db = require('../services/oracle.js');
 
 module.exports.getNguoidung = async function(context) {
   const sql = `select nd.nguoidung_id "nguoidung_id",
               nd.ma_nd "ma_nd",
               nd.matkhau "matkhau",
-              css_bkn.giaima_mk(nd.matkhau) "giaima_mk",
+              ${process.env.DB_SCHEMA_CSS}.giaima_mk(nd.matkhau) "giaima_mk",
               nd.trangthai "trangthai",
               nv.ma_nv ma_nv,
               nv.donvi_id "donvi_id"
-              from admin_bkn.nguoidung nd,
-              admin_bkn.nhanvien nv,
-              ttkd_bkn.nguoidung tnd,
-              ttkd_bkn.roles r
+              from ${process.env.DB_SCHEMA_ADMIN}.nguoidung nd,
+              ${process.env.DB_SCHEMA_ADMIN}.nhanvien nv,
+              ${process.env.DB_SCHEMA_TTKD}.nguoidung tnd,
+              ${process.env.DB_SCHEMA_TTKD}.roles r
               WHERE nd.nhanvien_id=nv.nhanvien_id
               and nd.nguoidung_id=tnd.nguoidung_id(+)
               and tnd.roles_id=r.id(+)
@@ -22,10 +21,10 @@ module.exports.getNguoidung = async function(context) {
 };
 
 module.exports.updateAuth = async function(context) {
-  const sql = `update ttkd_bkn.nguoidung set
-              last_login=:last_login,
-              token=:token
+  const sql = `update ${process.env.DB_SCHEMA_TTKD}.nguoidung set
+              last_login=SYSDATE
               where nguoidung_id=:nguoidung_id`;
+  // token=:token
   const rs = await db.execute(sql, context);
   if (rs.rowsAffected && rs.rowsAffected === 1) {
     return true;
@@ -54,10 +53,10 @@ module.exports.findNguoiDung = async function(context) {
     nv.donvi_id "donvi_id",
     r.name "roles",
     r.ID "roles_id"
-    from admin_bkn.nguoidung nd,
-    admin_bkn.nhanvien nv,
-    ttkd_bkn.nguoidung tnd,
-    ttkd_bkn.roles r
+    from ${process.env.DB_SCHEMA_ADMIN}.nguoidung nd,
+    ${process.env.DB_SCHEMA_ADMIN}.nhanvien nv,
+    ${process.env.DB_SCHEMA_TTKD}.nguoidung tnd,
+    ${process.env.DB_SCHEMA_TTKD}.roles r
     where nd.nguoidung_id=tnd.nguoidung_id(+)
     and nd.nhanvien_id=nv.nhanvien_id
     and tnd.roles_id=r.id(+)
@@ -67,7 +66,7 @@ module.exports.findNguoiDung = async function(context) {
 };
 
 module.exports.getUserFromToken = async function(context) {
-  const result = await db.executeCursor('ttkd_bkn.get_user_from_token', context);
+  const result = await db.executeCursor(`${process.env.DB_SCHEMA_TTKD}.get_user_from_token`, context);
   return result;
 };
 
@@ -91,10 +90,10 @@ module.exports.getAuthByToken = async function(context) {
   tnd.token "token",
   r.name "ten_quyen",
   r.roles "quyen"
-  from admin_bkn.nguoidung nd,
-  admin_bkn.nhanvien nv,
-  ttkd_bkn.nguoidung tnd,
-  ttkd_bkn.roles r
+  from ${process.env.DB_SCHEMA_ADMIN}.nguoidung nd,
+  ${process.env.DB_SCHEMA_ADMIN}.nhanvien nv,
+  ${process.env.DB_SCHEMA_TTKD}.nguoidung tnd,
+  ${process.env.DB_SCHEMA_TTKD}.roles r
   where nd.nguoidung_id=tnd.nguoidung_id(+)
   and nd.nhanvien_id=nv.nhanvien_id
   and tnd.roles_id=r.id(+)

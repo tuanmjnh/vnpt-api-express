@@ -1,6 +1,6 @@
 const oracledb = require('oracledb');
 const db = require('../services/oracle.js');
-const model = require("../models/contract-customer");
+const model = require('../models/contract-customer');
 
 const sql_select = `select ID "id",
 HDKH_ID "hdkh_id",
@@ -13,7 +13,7 @@ UPDATED_AT "updated_at",
 DELETED_BY "deleted_by",
 DELETED_AT "deleted_at",
 FLAG "flag"
-from ttkd_bkn.contract_customer`
+from ${process.env.DB_SCHEMA_TTKD}.contract_customer`
 
 module.exports.all = async function (binds) {
   const result = await db.execute(sql_select, binds);
@@ -27,7 +27,7 @@ module.exports.find = async function (binds) {
 };
 
 module.exports.create = async function (binds) {
-  const sql = `insert into ttkd_bkn.contract_customer(
+  const sql = `insert into ${process.env.DB_SCHEMA_TTKD}.contract_customer(
     hdkh_id,attach,descs,flag,
     created_by,created_at) values(
     :hdkh_id,:attach,:descs,:flag,
@@ -45,7 +45,7 @@ module.exports.create = async function (binds) {
 };
 
 module.exports.update = async function (binds) {
-  const sql = `update ttkd_bkn.navigation set
+  const sql = `update ${process.env.DB_SCHEMA_TTKD}.navigation set
     dependent=:dependent,levels=:levels,title=:title,icon=:icon,image=:image,
     url=:url,url_plus=:url_plus,orders=:orders,descs=:descs,flag=:flag,
     push=:push,go=:go,store=:store,app_key=:app_key,
@@ -64,7 +64,7 @@ module.exports.update = async function (binds) {
 module.exports.patch = async function (binds) {
   // checkAuth
   // query
-  const sql = `update ttkd_bkn.navigation set
+  const sql = `update ${process.env.DB_SCHEMA_TTKD}.navigation set
     flag=:flag,deleted_by=:deleted_by,deleted_at=sysdate
     where id=:id`
   // returning id,flag,deleted_by,deleted_at into :id,:flag,:deleted_by,:deleted_at`;

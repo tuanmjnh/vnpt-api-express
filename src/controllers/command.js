@@ -7,8 +7,8 @@ module.exports.select = async function(req, res, next) {
     if (!middleware.verify(req, res)) return
     let condition = `flag=${req.query.flag ? req.query.flag : 1}`
     if (req.query.filter) {
-      const filter = `like TTKD_BKN.CONVERTTOUNSIGN('%${req.query.filter}%',1)`
-      condition += ` and (TTKD_BKN.CONVERTTOUNSIGN(title,1) ${filter} or code ${filter})`
+      const filter = `like ${process.env.DB_SCHEMA_TTKD}.CONVERTTOUNSIGN('%${req.query.filter}%',1)`
+      condition += ` and (${process.env.DB_SCHEMA_TTKD}.CONVERTTOUNSIGN(title,1) ${filter} or code ${filter})`
     }
     if (req.query.sortBy) req.query.sortBy = req.query.sortBy.split(',').join('","')
     else req.query.sortBy = '"orders"'
@@ -21,7 +21,7 @@ module.exports.select = async function(req, res, next) {
         v_order: `"${req.query.sortBy}"` + (req.query.descending === 'true' ? ' DESC' : ''),
         v_total: { type: 2010, dir: 3002 }
       }
-      const rs = await db.executeCursors('ttkd_bkn.PAGING', context)
+      const rs = await db.executeCursors(`${process.env.DB_SCHEMA_TTKD}.PAGING`, context)
       if (rs) return res.status(200).json({ data: rs.cursor, rowsNumber: rs.out.v_total }).end()
     } else {
       const rs = await db.execute(`${sql} WHERE ${condition}`)
@@ -49,7 +49,7 @@ module.exports.insert = async function(req, res, next) {
       orders: req.body.orders,
       flag: req.body.flag
     }
-    const rs = await db.execute(model.select(), context)
+    const rs = await db.execute(model.insert(), context)
     if (rs.rowsAffected > 0) {
       context.created_at = new Date()
       context.id = rs.outBinds.id[0]
@@ -96,7 +96,7 @@ module.exports.lock = async function(req, res, next) {
     for await (let e of req.body.data) {
       context.push({ id: e.id })
     }
-    const sql = 'UPDATE TTKD_BKN.COMMAND SET FLAG=DECODE(flag,1,0,1) WHERE ID=:id'
+    const sql = `UPDATE ${process.env.DB_SCHEMA_TTKD}.COMMAND SET FLAG=DECODE(flag,1,0,1) WHERE ID=:id`
     const rs = await db.executeMany(sql, context)
     if (rs.rowsAffected > 0) {
       context.deleted_at = new Date()

@@ -1,6 +1,6 @@
 const Model = require('../utils/tm-oracle')
 
-module.exports = Model('ttkd_bkn.command', {
+module.exports = new Model(`${process.env.DB_SCHEMA_TTKD}.command`, {
   id: { type: String, key: true, auto: true },
   type: String,
   name: String,

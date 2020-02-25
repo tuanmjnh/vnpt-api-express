@@ -20,11 +20,12 @@ dv.ten_dv "ten_dv",
 r.name "roles",
 r.ID "roles_id",
 r.color "roles_color"
-from admin_bkn.nguoidung nd,
-admin_bkn.nhanvien nv,
-ttkd_bkn.nguoidung tnd,
-ttkd_bkn.roles r,
-admin_bkn.donvi dv,admin_bkn.donvi_ldv ldv
+from ${process.env.DB_SCHEMA_ADMIN}.nguoidung nd,
+${process.env.DB_SCHEMA_ADMIN}.nhanvien nv,
+${process.env.DB_SCHEMA_TTKD}.nguoidung tnd,
+${process.env.DB_SCHEMA_TTKD}.roles r,
+${process.env.DB_SCHEMA_ADMIN}.donvi dv,
+${process.env.DB_SCHEMA_ADMIN}.donvi_ldv ldv
 where nd.nguoidung_id=tnd.nguoidung_id(+)
 and nd.nhanvien_id=nv.nhanvien_id
 and tnd.roles_id=r.id(+)
@@ -33,7 +34,7 @@ and nd.nguoidung_id not in(6502,0,2,4,6503,6555,6556,6475,6443,6449,6445,6446,64
 
 module.exports.paging = async function(context, condition) {
   context.v_sql = `${_sql} and ${condition}`
-  const rs = await db.executeCursors('ttkd_bkn.PAGING', context)
+  const rs = await db.executeCursors(`${process.env.DB_SCHEMA_TTKD}.PAGING`, context)
   return { data: rs.cursor, rowsNumber: rs.out.v_total }
 }
 
@@ -65,11 +66,12 @@ module.exports.find = async function(context, order) {
     r.name "roles",
     r.ID "roles_id",
     r.color "roles_color"
-    from admin_bkn.nguoidung nd,
-    admin_bkn.nhanvien nv,
-    ttkd_bkn.nguoidung tnd,
-    ttkd_bkn.roles r,
-    admin_bkn.donvi dv,admin_bkn.donvi_ldv ldv
+    from ${process.env.DB_SCHEMA_ADMIN}.nguoidung nd,
+    ${process.env.DB_SCHEMA_ADMIN}.nhanvien nv,
+    ${process.env.DB_SCHEMA_TTKD}.nguoidung tnd,
+    ${process.env.DB_SCHEMA_TTKD}.roles r,
+    ${process.env.DB_SCHEMA_ADMIN}.donvi dv,
+    ${process.env.DB_SCHEMA_ADMIN}.donvi_ldv ldv
     where nd.nguoidung_id=tnd.nguoidung_id(+)
     and nd.nhanvien_id=nv.nhanvien_id
     and tnd.roles_id=r.id(+)
@@ -89,14 +91,14 @@ module.exports.find = async function(context, order) {
 }
 
 module.exports.getPassword = async function(context) {
-  const sql = `SELECT CSS_BKN.GIAIMA_MK(MATKHAU)"matkhau" FROM ADMIN_BKN.NGUOIDUNG WHERE MA_ND=:ma_nd`
+  const sql = `SELECT ${process.env.DB_SCHEMA_CSS}.GIAIMA_MK(MATKHAU)"matkhau" FROM ${process.env.DB_SCHEMA_ADMIN}.NGUOIDUNG WHERE MA_ND=:ma_nd`
   const rs = await db.execute(sql, context)
   if (rs.rows.length) return rs.rows[0]
   return { matkhau: '' }
 }
 
 module.exports.setRoles = async function(context) {
-  const sql = `UPDATE TTKD_BKN.NGUOIDUNG SET ROLES_ID=:roles_id WHERE nguoidung_id=:nguoidung_id`
+  const sql = `UPDATE ${process.env.DB_SCHEMA_TTKD}.NGUOIDUNG SET ROLES_ID=:roles_id WHERE nguoidung_id=:nguoidung_id`
   const rs = await db.execute(sql, context)
   return context
 }

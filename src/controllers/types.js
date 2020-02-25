@@ -6,8 +6,8 @@ module.exports.select = async function(req, res, next) {
     if (!middleware.verify(req, res)) return
     let condition = `flag=${req.query.flag ? req.query.flag : 1}`
     if (req.query.filter) {
-      const filter = `like TTKD_BKN.CONVERTTOUNSIGN('%${req.query.filter}%',1)`
-      condition += ` and (TTKD_BKN.CONVERTTOUNSIGN(title,1) ${filter} or code ${filter})`
+      const filter = `like ${process.env.DB_SCHEMA_TTKD}.CONVERTTOUNSIGN('%${req.query.filter}%',1)`
+      condition += ` and (${process.env.DB_SCHEMA_TTKD}.CONVERTTOUNSIGN(title,1) ${filter} or code ${filter})`
     }
     if (req.query.sortBy) req.query.sortBy = req.query.sortBy.split(',').join('","')
     else req.query.sortBy = '"orders"'

@@ -1,48 +1,39 @@
-const dbapi = require('../db_apis/business'),
+const db = require('../services/oracle.js'),
+  model = require('../models/business'),
   ip = require('../utils/ip'),
   middleware = require('../services/middleware')
 
 module.exports.select = async function(req, res, next) {
   try {
     if (!middleware.verify(req, res)) return
-    let condition = `trang_thai=${req.query.flag ? req.query.flag : 1}`
+    let condition = `m.trang_thai=${req.query.flag ? req.query.flag : 1}`
     if (req.query.filter) {
-      const filter = `like TTKD_BKN.CONVERTTOUNSIGN('%${req.query.filter}%',1)`
-      condition += ` and (TTKD_BKN.CONVERTTOUNSIGN(ten_kh,1) ${filter} and ma_hd ${filter} or mst ${filter} or sdt ${filter} or stk ${filter} or sgt ${filter})`
+      const filter = `like ${process.env.DB_SCHEMA_TTKD}.CONVERTTOUNSIGN('%${req.query.filter}%',1)`
+      condition += ` and (${process.env.DB_SCHEMA_TTKD}.CONVERTTOUNSIGN(m.ten_kh,1) ${filter} and m.ma_hd ${filter} or mst ${filter} or sdt ${filter} or stk ${filter} or sgt ${filter})`
     }
-    if (req.query.ma_hd) condition += ` and e.ma_hd=${req.query.ma_hd}`
-    if (req.query.donvi_id) condition += ` and e.donvi_id=${req.query.donvi_id}`
-    if (req.query.group_id) condition += ` and e.group_id=${req.query.group_id}`
-    if (req.query.nguoi_gt) condition += ` and e.nguoi_gt=${req.query.nguoi_gt}`
+    if (req.query.ma_hd) condition += ` and m.ma_hd=${req.query.ma_hd}`
+    if (req.query.donvi_id) condition += ` and m.donvi_id=${req.query.donvi_id}`
+    if (req.query.group_id) condition += ` and m.group_id=${req.query.group_id}`
+    if (req.query.nguoi_gt) condition += ` and m.nguoi_gt=${req.query.nguoi_gt}`
     if (req.query.sortBy) req.query.sortBy = req.query.sortBy.split(',').join('","')
     else req.query.sortBy = '"ngay_tao"'
+    const sql = `${model.select('m', 'nv.ten_nv "ten_nguoi_gt"')},${process.env.DB_SCHEMA_ADMIN}.NHANVIEN nv
+    WHERE m.NGUOI_GT=nv.NHANVIEN_ID`
     if (req.query.page && req.query.rowsPerPage) {
-      const options = {
-        v_sql: condition,
+      const context = {
+        v_sql: `${sql} AND ${condition}`,
         v_offset: parseInt(req.query.page),
         v_limmit: parseInt(req.query.rowsPerPage),
         v_order: `"${req.query.sortBy}"` + (req.query.descending === 'true' ? ' DESC' : ''),
         v_total: { type: 2010, dir: 3002 }
       }
-      const rs = await dbapi.paging(options, condition)
-      if (rs) return res.status(200).json(rs).end()
+      const rs = await db.executeCursors(`${process.env.DB_SCHEMA_TTKD}.PAGING`, context)
+      if (rs) return res.status(200).json({ data: rs.cursor, rowsNumber: rs.out.v_total }).end()
     } else {
-      const rs = await dbapi.getAll(condition)
-      if (rs) return res.status(200).json(rs).end()
+      const rs = await db.execute(`${sql} WHERE ${condition}`)
+      if (rs) return res.status(200).json(rs.rows).end()
     }
     return res.status(200).json({ rowsNumber: 0, data: [] }).end()
-  } catch (e) {
-    console.log(e)
-    return res.status(500).send('invalid')
-  }
-}
-
-module.exports.getKey = async function(req, res, next) {
-  try {
-    if (!middleware.verify(req, res)) return
-    const rs = await dbapi.getKey()
-    if (rs) return res.status(200).json(rs).end()
-    return res.status(200).json([]).end()
   } catch (e) {
     console.log(e)
     return res.status(500).send('invalid')
@@ -55,6 +46,7 @@ module.exports.insert = async function(req, res, next) {
     if (!verify) return
     if (!req.body || Object.keys(req.body).length < 1) return res.status(500).send('invalid')
     const context = {
+      id: { type: 2001, dir: 3003 }, // BIND_OUT
       donvi_id: verify.donvi_id,
       group_id: req.body.group_id,
       kieuld_id: req.body.kieuld_id,
@@ -81,8 +73,12 @@ module.exports.insert = async function(req, res, next) {
       ip_tao: ip.get(req),
       trang_thai: req.body.trang_thai
     }
-    const rs = await dbapi.insert(context)
-    if (rs) return res.status(201).json(rs).end()
+    const rs = await db.execute(model.insert(context), context)
+    if (rs.rowsAffected > 0) {
+      context.ngay_tao = new Date()
+      context.id = rs.outBinds.id[0]
+      return res.status(201).json(context).end()
+    }
     return res.status(200).json([]).end()
   } catch (e) {
     console.log(e)
@@ -123,8 +119,11 @@ module.exports.update = async function(req, res, next) {
       ip_cn: ip.get(req),
       trang_thai: req.body.trang_thai
     }
-    const rs = await dbapi.update(context)
-    if (rs) return res.status(202).json(rs).end()
+    const rs = await db.execute(model.update(context), context)
+    if (rs.rowsAffected > 0) {
+      context.ngay_cn = new Date()
+      return res.status(202).json(context).end()
+    }
     return res.status(200).json([]).end()
   } catch (e) {
     console.log(e)
@@ -140,8 +139,14 @@ module.exports.lock = async function(req, res, next) {
     for await (let e of req.body.data) {
       context.push({ id: e, ip_xoa: ip.get(req), nguoi_xoa: verify.code })
     }
-    const rs = await dbapi.lock(context)
-    if (rs) return res.status(203).json(rs).end()
+    const sql = `UPDATE ${process.env.DB_SCHEMA_TTKD}.CONTRACT_ENTERPRISE 
+    SET trang_thai=DECODE(trang_thai,1,0,1),IP_XOA=:ip_xoa,NGUOI_XOA=:nguoi_xoa,NGAY_XOA=SYSDATE
+    WHERE id=:id`
+    const rs = await db.executeMany(sql, context)
+    if (rs.rowsAffected > 0) {
+      context.deleted_at = new Date()
+      return res.status(203).json(context).end()
+    }
     return res.status(200).json([]).end()
   } catch (e) {
     return res.status(500).send('invalid')
@@ -155,8 +160,8 @@ module.exports.delete = async function(req, res, next) {
     const context = {
       id: req.body.id
     }
-    const rs = await dbapi.delete(context)
-    if (rs) return res.status(204).json(rs).end()
+    const rs = await db.execute(model.delete(), context)
+    if (rs) return res.status(204).json(rs.rowsAffected).end()
     return res.status(200).json([]).end()
   } catch (e) {
     return res.status(500).send('invalid')

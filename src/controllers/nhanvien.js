@@ -6,8 +6,8 @@ module.exports.select = async function(req, res, next) {
     if (!middleware.verify(req, res)) return
     let condition = 'nhanvien_id is not null'
     if (req.query.filter) {
-      const filter = `like TTKD_BKN.CONVERTTOUNSIGN('%${req.query.filter}%',1)`
-      condition += ` and (TTKD_BKN.CONVERTTOUNSIGN(ten_nv,1) ${filter} and ma_nv ${filter})`
+      const filter = `like ${process.env.DB_SCHEMA_TTKD}.CONVERTTOUNSIGN('%${req.query.filter}%',1)`
+      condition += ` and (${process.env.DB_SCHEMA_TTKD}.CONVERTTOUNSIGN(ten_nv,1) ${filter} and ma_nv ${filter})`
     }
     if (req.query.donvi_id) condition += ` and donvi_id=${req.query.donvi_id}`
     if (req.query.donvi_dl_id) condition += ` and donvi_dl_id=${req.query.donvi_dl_id}`

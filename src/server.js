@@ -1,12 +1,26 @@
+// Load environment variables from .env file, where API keys and passwords are configured
+require('dotenv').config({
+  path: !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? '.env' : `.env.${process.env.NODE_ENV}`
+})
 // const path = require('path')
 process.env.ROOT_PATH = __dirname // Root path
-process.env.PUBLIC_PATH = 'public'
-process.env.STATIC_PATH = 'static'
-process.env.UPLOAD_PATH = 'uploads'
 //
 process.env.PUBLIC_DIR = `${process.env.ROOT_PATH}/${process.env.PUBLIC_PATH}`// path.join(__dirname, 'public')
 process.env.STATIC_DIR = `${process.env.PUBLIC_DIR}/${process.env.STATIC_PATH}`
 process.env.UPLOAD_DIR = `${process.env.PUBLIC_DIR}/${process.env.UPLOAD_PATH}`
+
+// console.log(process.env.DB_SCHEMA_ADMIN)
+// console.log(process.env.DB_SCHEMA_DULIEU)
+// console.log(process.env.DB_SCHEMA_CSS)
+// console.log(process.env.DB_SCHEMA_BCSS)
+// console.log(process.env.DB_SCHEMA_BSC)
+// console.log(process.env.DB_SCHEMA_HDDT)
+// console.log(process.env.DB_SCHEMA_QLSC)
+// console.log(process.env.DB_SCHEMA_QLTB)
+// console.log(process.env.DB_SCHEMA_QLTN)
+// console.log(process.env.DB_SCHEMA_QLVT)
+// console.log(process.env.DB_SCHEMA_TINHCUOC)
+// console.log(process.env.DB_SCHEMA_TTKD)
 
 const express = require('express'),
   bodyParser = require('body-parser'),
@@ -18,11 +32,6 @@ const express = require('express'),
   oracleDB = require('./services/oracle.js'),
   router = require('./router')
 
-// Load environment variables from .env file, where API keys and passwords are configured
-require('dotenv').config({
-  path: !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? '.env' : `.env.${process.env.NODE_ENV}`
-})
-
 // console.log(process.env.ROOT_PATH)
 // if (process.env.NODE_ENV.toString() === 'development') dotenv.config({ path: '.env.development' })
 // else dotenv.config({ path: '.env' })
@@ -31,7 +40,7 @@ require('dotenv').config({
 //   process.env.BASE_URL = '/'
 // }
 // Connection oracleDB
-oracleDB.initialize();
+oracleDB.initialize()
 // app express
 const app = express()
 // trust proxy ip
@@ -39,9 +48,9 @@ app.set('trust proxy', true)
 // static public
 // app.use(express.static(process.env.PUBLIC_PATH, { maxAge: 31557600000 }))
 // app.use('/public', express.static(path.join(__dirname, 'public')))
-app.use(`${process.env.BASE_URL}public`, express.static(process.env.PUBLIC_DIR))
-app.use(`${process.env.BASE_URL}static`, express.static(process.env.STATIC_DIR))
-app.use(`${process.env.BASE_URL}uploads`, express.static(process.env.UPLOAD_DIR))
+app.use(`${process.env.BASE_URL}${process.env.PUBLIC_PATH}`, express.static(process.env.PUBLIC_DIR))
+app.use(`${process.env.BASE_URL}${process.env.STATIC_PATH}`, express.static(process.env.STATIC_DIR))
+app.use(`${process.env.BASE_URL}${process.env.UPLOAD_PATH}`, express.static(process.env.UPLOAD_DIR))
 // bodyParser
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))

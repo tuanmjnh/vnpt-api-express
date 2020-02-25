@@ -8,8 +8,8 @@ module.exports.select = async function(req, res, next) {
     if (!middleware.verify(req, res)) return
     let condition = ''
     if (req.query.filter) {
-      const filter = `like TTKD_BKN.CONVERTTOUNSIGN('%${req.query.filter}%',1)`
-      condition += ` and (TTKD_BKN.CONVERTTOUNSIGN(ten_dv,1) ${filter} or 
+      const filter = `like ${process.env.DB_SCHEMA_TTKD}.CONVERTTOUNSIGN('%${req.query.filter}%',1)`
+      condition += ` and (${process.env.DB_SCHEMA_TTKD}.CONVERTTOUNSIGN(ten_dv,1) ${filter} or 
       diachi_dv ${filter} or so_dt ${filter} or mst ${filter} or stk ${filter} or nguoi_dd ${filter} or chucdanh ${filter})`
     }
     if (req.query.sortBy) req.query.sortBy = req.query.sortBy.split(',').join('","')
