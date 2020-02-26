@@ -90,6 +90,7 @@ router.route('/donvi')
   .put(donvi.update)
   .patch(donvi.lock)
   .delete(donvi.delete)
+router.route('/donvi/ttkd').get(donvi.getDonviTTKD)
 
 // Địa bàn
 router.route('/diaban/quan').get(diaban.getQuan)

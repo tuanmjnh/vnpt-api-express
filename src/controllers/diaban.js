@@ -3,38 +3,6 @@ const dbapi = require('../db_apis/diaban'),
   middleware = require('../services/middleware'),
   moment = require('moment')
 
-module.exports.select = async function(req, res, next) {
-  try {
-    if (!middleware.verify(req, res)) return
-    let condition = ''
-    if (req.query.filter) {
-      const filter = `like ${process.env.DB_SCHEMA_TTKD}.CONVERTTOUNSIGN('%${req.query.filter}%',1)`
-      condition += ` and (${process.env.DB_SCHEMA_TTKD}.CONVERTTOUNSIGN(ten_dv,1) ${filter} or 
-      diachi_dv ${filter} or so_dt ${filter} or mst ${filter} or stk ${filter} or nguoi_dd ${filter} or chucdanh ${filter})`
-    }
-    if (req.query.sortBy) req.query.sortBy = req.query.sortBy.split(',').join('","')
-    else req.query.sortBy = '"orders","levels"'
-    if (req.query.page && req.query.rowsPerPage) {
-      const options = {
-        v_sql: condition,
-        v_offset: parseInt(req.query.page),
-        v_limmit: parseInt(req.query.rowsPerPage),
-        v_order: `"${req.query.sortBy}"` + (req.query.descending === 'true' ? ' DESC' : ''),
-        v_total: { type: 2010, dir: 3002 }
-      }
-      const rs = await dbapi.paging(options)
-      if (rs) return res.status(200).json(rs).end()
-    } else {
-      const rs = await dbapi.getAll({ condition: condition, order: 'DONVI_ID' })
-      if (rs) return res.status(200).json(rs).end()
-    }
-    return res.status(200).json({ rowsNumber: 0, data: [] }).end()
-  } catch (e) {
-    console.log(e)
-    return res.status(500).send('invalid')
-  }
-}
-
 module.exports.getQuan = async function(req, res, next) {
   try {
     if (!middleware.verify(req, res)) return
@@ -201,7 +169,9 @@ module.exports.updatePhoCuoc = async function(req, res, next) {
     if (!middleware.verify(req, res)) return
     req.body.kycuoc = moment(req.body.kycuoc, 'YYYYMMDD').format('YYYYMMDD')
     if (req.body.kycuoc === 'Invalid date') res.status(500).send('invalid')
-    await dbapi.updatePhoCuoc({ vkycuoc: req.body.kycuoc })
+    const context = { vkycuoc: req.body.kycuoc }
+    if (req.body.donvi_id && req.body.donvi_id.length) context.donvi_id = req.body.donvi_id
+    await dbapi.updatePhoCuoc(context)
     return res.status(202).json(true).end()
   } catch (e) {
     console.log(e)
@@ -215,7 +185,9 @@ module.exports.updateDoiTuongCuoc = async function(req, res, next) {
     if (!middleware.verify(req, res)) return
     req.body.kycuoc = moment(req.body.kycuoc, 'YYYYMMDD').format('YYYYMMDD')
     if (req.body.kycuoc === 'Invalid date') res.status(500).send('invalid')
-    await dbapi.updateDoiTuongCuoc({ vkycuoc: req.body.kycuoc })
+    const context = { vkycuoc: req.body.kycuoc }
+    if (req.body.donvi_id && req.body.donvi_id.length) context.donvi_id = req.body.donvi_id
+    await dbapi.updateDoiTuongCuoc(context)
     return res.status(202).json(true).end()
   } catch (e) {
     console.log(e)

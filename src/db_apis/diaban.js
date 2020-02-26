@@ -144,25 +144,27 @@ module.exports.updateDBPho = async function(context, order) {
 }
 
 // Cập nhật PHO_ID của TINHCUOC_BKN.DBTB_[Kỳ cước] từ PHO_ID của DB_THUEBAO
-module.exports.updatePhoCuoc = async function(context, order) {
+module.exports.updatePhoCuoc = async function(context) {
   let sql = `UPDATE(
     SELECT tb.THUEBAO_ID,dc.PHO_ID new,C.PHO_ID old
     FROM ${process.env.DB_SCHEMA_CSS}.DB_THUEBAO tb,${process.env.DB_SCHEMA_CSS}.DIACHI_TB dctb,
     ${process.env.DB_SCHEMA_CSS}.DIACHI dc,${process.env.DB_SCHEMA_TINHCUOC}.DBTB_${context.vkycuoc} c
     WHERE tb.THUEBAO_ID=dctb.THUEBAO_ID AND dctb.DIACHI_ID=dc.DIACHI_ID 
-    AND tb.THUEBAO_ID=c.THUEBAO_ID AND dc.PHO_ID!=c.PHO_ID
-    )t SET t.old=t.new`
+    AND tb.THUEBAO_ID=c.THUEBAO_ID AND dc.PHO_ID!=c.PHO_ID`
+  if (context.donvi_id) sql += ` AND tb.DONVI_ID IN(${context.donvi_id.join(',')})`
+  sql += `)t SET t.old=t.new`
   const rs = await db.execute(sql)
   return rs.rows
 }
 
 // Cập nhật DOITUONG_ID của TINHCUOC_BKN.DBTB_[Kỳ cước] từ DOITUONG_ID của DB_THUEBAO
-module.exports.updateDoiTuongCuoc = async function(context, order) {
+module.exports.updateDoiTuongCuoc = async function(context) {
   let sql = `UPDATE(
     SELECT tb.THUEBAO_ID,tb.DOITUONG_ID new,C.DOITUONG_ID old
     FROM ${process.env.DB_SCHEMA_CSS}.DB_THUEBAO tb,${process.env.DB_SCHEMA_TINHCUOC}.DBTB_${context.vkycuoc} c
-    WHERE tb.THUEBAO_ID=c.THUEBAO_ID AND tb.DOITUONG_ID!=c.DOITUONG_ID
-    )t SET t.old=t.new`
+    WHERE tb.THUEBAO_ID=c.THUEBAO_ID AND tb.DOITUONG_ID!=c.DOITUONG_ID`
+  if (context.donvi_id) sql += ` AND tb.DONVI_ID IN(${context.donvi_id.join(',')})`
+  sql += `)t SET t.old=t.new`
   const rs = await db.execute(sql)
   return rs.rows
 }

@@ -62,6 +62,17 @@ module.exports.find = async function(req, res, next) {
   }
 }
 
+module.exports.getDonviTTKD = async function(req, res, next) {
+  try {
+    const rs = await dbapi.getDonviTTKD()
+    if (rs) return res.status(200).json(rs).end()
+    return res.status(200).json([]).end()
+  } catch (e) {
+    console.log(e)
+    return res.status(500).send('invalid')
+  }
+}
+
 module.exports.insert = async function(req, res, next) {
   // try {
   //   const verify = middleware.verify(req, res)

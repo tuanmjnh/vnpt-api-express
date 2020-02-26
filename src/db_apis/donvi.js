@@ -33,6 +33,25 @@ module.exports.find = async function(context, order) {
   const rs = await db.execute(sql, context)
   return rs.rows
 }
+
+module.exports.getDonviTTKD = async function(context, order) {
+  let sql = `SELECT MA_DVI "ma_dvi",
+    DONVI_ID "donvi_id",
+    DONVI_QL_ID "donvi_ql_id",
+    TEN_DV "ten_dv",
+    TEN_DV_QL "ten_dv_ql",
+    STK "stk",
+    SDT "sdt",
+    MA_DV "ma_dv",
+    TUYENTHU_ID "tuyenthu_id",
+    QUAN_ID "quan_id",
+    PHUONG_ID "phuong_id",
+    PHO_ID "pho_id"
+    FROM ${process.env.DB_SCHEMA_TTKD}.DB_DONVI`
+  const rs = await db.execute(sql, context)
+  return rs.rows
+}
+
 module.exports.insert = async function(context) {
   const sql = `INSERT INTO ${process.env.DB_SCHEMA_TTKD}.ROLES(ID,NAME,ORDERS,DESCS,CREATED_BY,CREATED_AT,FLAG,COLOR,CODE,LEVELS,ROLES
     VALUES(SYS_GUID(),:name,:orders,:descs,:created_by,SYSDATE,:flag,:color,:code,:levels,:roles)
