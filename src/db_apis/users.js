@@ -99,6 +99,6 @@ module.exports.getPassword = async function(context) {
 
 module.exports.setRoles = async function(context) {
   const sql = `UPDATE ${process.env.DB_SCHEMA_TTKD}.NGUOIDUNG SET ROLES_ID=:roles_id WHERE nguoidung_id=:nguoidung_id`
-  const rs = await db.execute(sql, context)
+  const rs = await db.executeMany(sql, context)
   return context
 }

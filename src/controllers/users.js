@@ -9,7 +9,7 @@ module.exports.select = async function(req, res, next) {
     const user = await dbapiAuth.findNguoiDung({ nguoidung_id: verify.id })
     let condition = `trangthai>=${!req.query.trangthai ? 1 : req.query.trangthai}`
     condition += user && user.length && user[0].donvi_id ? ` and nv.donvi_id=${user[0].donvi_id}` : ''
-    if (!user[0].donvi_id) condition += ` and nv.donvi_id=${req.query.donvi_id}`
+    if (!user[0].donvi_id && req.query.donvi_id) condition += ` and nv.donvi_id=${req.query.donvi_id}`
     if (req.query.filter) {
       const filter = `like ${process.env.DB_SCHEMA_TTKD}.CONVERTTOUNSIGN('%${req.query.filter}%',1)`
       condition += ` and (ma_nd ${filter} or ${process.env.DB_SCHEMA_TTKD}.CONVERTTOUNSIGN(ten_nd,1) ${filter} or ma_nv ${filter} or TTKD_BKN.CONVERTTOUNSIGN(ten_nv,1) ${filter})`
@@ -224,9 +224,9 @@ module.exports.setRoles = async function(req, res, next) {
     if (!verify) return
     // if (!req.body._id) return res.status(500).send('invalid')
     if (!req.body || Object.keys(req.body).length < 1) return res.status(500).send('invalid')
-    const context = {
-      nguoidung_id: req.body.nguoidung_id,
-      roles_id: req.body.roles_id
+    const context = []
+    for await (let e of req.body.nguoidung_id) {
+      context.push({ nguoidung_id: e, roles_id: req.body.roles_id })
     }
     const rs = await dbapi.setRoles(context)
     if (rs) return res.status(202).json(rs).end()
