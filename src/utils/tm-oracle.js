@@ -27,8 +27,10 @@ const Model = function(name, schema, options = {}) {
       if (schema[_keys[i]].key) rerutns += options.lower ? `\nRETURNING ${_keys[i]} INTO :${_keys[i].toLowerCase()}` : `\nRETURNING ${_keys[i]} INTO :${_keys[i]}`
       if (schema[_keys[i]].auto) continue
       rs += `${_keys[i].toUpperCase()},\n`
-      if (schema[_keys[i]].autoDate) value += 'SYSDATE,\n'
-      else value += options.lower ? `:${_keys[i].toLowerCase()},\n` : `:${_keys[i]},\n`
+      if (schema[_keys[i]].autoDate) {
+        value += 'SYSDATE,\n'
+        delete context[_keys[i]]
+      } else value += options.lower ? `:${_keys[i].toLowerCase()},\n` : `:${_keys[i]},\n`
       // console.log(_keys.length)
       // if (i < _keys.length - 1) {
       //   rs += ',\n'
@@ -50,8 +52,10 @@ const Model = function(name, schema, options = {}) {
     for (let i = 0; i < _keys.length; i++) {
       if (schema[_keys[i]].key) where += `${_keys[i].toUpperCase()}=:${options.lower ? _keys[i].toLowerCase() : _keys[i]}`
       else {
-        if (schema[_keys[i]].autoDate) rs += `${_keys[i].toUpperCase()}=SYSDATE`
-        else rs += `${_keys[i].toUpperCase()}=:${options.lower ? _keys[i].toLowerCase() : _keys[i]}`
+        if (schema[_keys[i]].autoDate) {
+          rs += `${_keys[i].toUpperCase()}=SYSDATE`
+          delete context[_keys[i]]
+        } else rs += `${_keys[i].toUpperCase()}=:${options.lower ? _keys[i].toLowerCase() : _keys[i]}`
         if (i < _keys.length - 1) rs += ','
         rs += '\n'
       }

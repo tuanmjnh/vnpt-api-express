@@ -69,6 +69,7 @@ module.exports.insert = async function(req, res, next) {
       ngay_cap: req.body.ngay_cap,
       noi_cap: req.body.noi_cap,
       nguoi_gt: req.body.nguoi_gt,
+      ngay_tao: Date.now(),
       nguoi_tao: verify.code,
       ip_tao: ip.get(req),
       trang_thai: req.body.trang_thai
@@ -115,6 +116,7 @@ module.exports.update = async function(req, res, next) {
       ngay_cap: req.body.ngay_cap,
       noi_cap: req.body.noi_cap,
       nguoi_gt: req.body.nguoi_gt,
+      ngay_cn: Date.now(),
       nguoi_cn: verify.code,
       ip_cn: ip.get(req),
       trang_thai: req.body.trang_thai

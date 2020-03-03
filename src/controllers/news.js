@@ -55,6 +55,7 @@ module.exports.insert = async function(req, res, next) {
       content: req.body.content,
       tags: req.body.tags,
       attach: req.body.attach,
+      created_at: Date.now(),
       created_ip: ip.get(req),
       created_by: verify.code,
       flag: req.body.flag
@@ -91,6 +92,7 @@ module.exports.update = async function(req, res, next) {
       content: req.body.content,
       attach: req.body.attach,
       tags: req.body.tags,
+      updated_at: Date.now(),
       updated_ip: ip.get(req),
       updated_by: verify.code,
       flag: req.body.flag
