@@ -1,5 +1,6 @@
 const dbapi = require('../db_apis/users'),
   dbapiAuth = require('../db_apis/auth'),
+  crypto = require('../utils/crypto'),
   middleware = require('../services/middleware')
 
 module.exports.select = async function(req, res, next) {
@@ -224,11 +225,15 @@ module.exports.setRoles = async function(req, res, next) {
     if (!verify) return
     // if (!req.body._id) return res.status(500).send('invalid')
     if (!req.body || Object.keys(req.body).length < 1) return res.status(500).send('invalid')
-    const context = []
+    const ct_insert = []
+    const ct_update = []
     for await (let e of req.body.nguoidung_id) {
-      context.push({ nguoidung_id: e, roles_id: req.body.roles_id })
+      const salt = crypto.NewGuid()
+      const matkhau = crypto.NewGuid('n')
+      ct_insert.push({ nguoidung_id: e, roles_id: req.body.roles_id, salt: salt, matkhau: crypto.md5(matkhau + salt) })
+      ct_update.push({ nguoidung_id: e, roles_id: req.body.roles_id })
     }
-    const rs = await dbapi.setRoles(context)
+    const rs = await dbapi.setRoles(ct_insert, ct_update)
     if (rs) return res.status(202).json(rs).end()
     return res.status(200).json([]).end()
   } catch (e) {

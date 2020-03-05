@@ -97,8 +97,14 @@ module.exports.getPassword = async function(context) {
   return { matkhau: '' }
 }
 
-module.exports.setRoles = async function(context) {
-  const sql = `UPDATE ${process.env.DB_SCHEMA_TTKD}.NGUOIDUNG SET ROLES_ID=:roles_id WHERE nguoidung_id=:nguoidung_id`
-  const rs = await db.executeMany(sql, context)
-  return context
+module.exports.setRoles = async function(ct_insert, ct_update) {
+  let sql = `INSERT INTO TTKD_BKN.NGUOIDUNG(NGUOIDUNG_ID, MATKHAU,SALT,ROLES_ID)
+  SELECT :nguoidung_id,:matkhau,:salt,:roles_id FROM DUAL
+  WHERE NOT EXISTS(SELECT * FROM TTKD_BKN.NGUOIDUNG WHERE NGUOIDUNG_ID=:nguoidung_id)`
+  let rs = await db.executeMany(sql, ct_insert)
+  if (!rs.rowsAffected) {
+    sql = `UPDATE ${process.env.DB_SCHEMA_TTKD}.NGUOIDUNG SET ROLES_ID=:roles_id WHERE nguoidung_id=:nguoidung_id`
+    rs = await db.executeMany(sql, ct_update)
+  }
+  return rs
 }
