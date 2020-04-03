@@ -1,4 +1,4 @@
-const Model = require('../utils/tm-oracle')
+const Model = require('../utils/tm-oracle');
 
 module.exports = Model(`${process.env.DB_SCHEMA_TTKD}.HDDT_`, {
   thang: Number,
@@ -35,4 +35,4 @@ module.exports = Model(`${process.env.DB_SCHEMA_TTKD}.HDDT_`, {
   ten_donvi_ql: String,
   stk: String,
   pattern: String
-})
+});

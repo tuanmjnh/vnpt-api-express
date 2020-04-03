@@ -29,7 +29,10 @@ module.exports.GenerationSelect = async function(req, res, next) {
     });
     result = result.trim().substr(0, result.length - 2);
     result += `\nfrom ${req.body.table} ${req.body.where ? `\nwhere ${req.body.where}` : ''}`;
-    res.status(200).send(result).end();
+    res
+      .status(200)
+      .send(result)
+      .end();
   } catch (err) {
     next(err);
   }
@@ -44,7 +47,10 @@ module.exports.GenerationModel = async function(req, res, next) {
     });
     result = result.trim().substr(0, result.length - 2);
     result += `\n}`;
-    res.status(200).send(result).end();
+    res
+      .status(200)
+      .send(result)
+      .end();
   } catch (err) {
     next(err);
   }
@@ -69,7 +75,10 @@ module.exports.getColumn = async function(req, res, next) {
     get_context = get_context.trim().substr(0, get_context.length - 2) + `\n\t}\n};`;
     // Result
     const result = `${table}\n\n${key}\n\n${context}\n\n${get_context}`;
-    res.status(200).send(result).end();
+    res
+      .status(200)
+      .send(result)
+      .end();
   } catch (err) {
     next(err);
   }
@@ -77,23 +86,26 @@ module.exports.getColumn = async function(req, res, next) {
 
 module.exports.transactionList = async function(req, res, next) {
   try {
-    const items = []
+    const items = [];
     for (let index = 0; index < 20; index++) {
       items.push({
         order_no: helpers.NewGuid(),
         timestamp: helpers.RandomDate(new Date(2012, 0, 1), new Date()),
         username: 'name',
-        price: (Math.random() * (0.120 - 0.0200) + 0.0200).toFixed(4),
+        price: (Math.random() * (0.12 - 0.02) + 0.02).toFixed(4),
         status: Math.random() % 2 === 0 ? 'success' : 'pending'
-      })
+      });
     }
-    res.status(200).json({
-      code: 20000,
-      data: {
-        total: 20,
-        items: items
-      }
-    }).end();
+    res
+      .status(200)
+      .json({
+        code: 20000,
+        data: {
+          total: 20,
+          items: items
+        }
+      })
+      .end();
   } catch (err) {
     next(err);
   }

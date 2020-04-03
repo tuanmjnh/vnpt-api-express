@@ -1,4 +1,4 @@
-const Model = require('../utils/tm-oracle')
+const Model = require('../utils/tm-oracle');
 
 module.exports = new Model(`${process.env.DB_SCHEMA_TTKD}.GROUPS`, {
   id: { type: Number, key: true, auto: true },
@@ -29,4 +29,4 @@ module.exports = new Model(`${process.env.DB_SCHEMA_TTKD}.GROUPS`, {
   deleted_at: { type: Date, autoDate: true },
   deleted_ip: String,
   flag: Number
-})
+});

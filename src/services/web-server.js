@@ -57,8 +57,8 @@ module.exports.initialize = function() {
     app.options('*', cors());
     app.use(compression());
     /*
-    * Error Handler. Provides full stack - remove for production
-    */
+     * Error Handler. Provides full stack - remove for production
+     */
     if (process.env.NODE_ENV !== 'production') {
       const errorHandler = require('errorHandler');
       app.use(errorHandler());
@@ -68,15 +68,17 @@ module.exports.initialize = function() {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
     // app.use(expressValidator);
-    app.use(session({
-      resave: true,
-      saveUninitialized: true,
-      secret: webServerConfig.secret
-      // store: new MongoStore({
-      //   url: mongoUrl,
-      //   autoReconnect: true
-      // })
-    }));
+    app.use(
+      session({
+        resave: true,
+        saveUninitialized: true,
+        secret: webServerConfig.secret
+        // store: new MongoStore({
+        //   url: mongoUrl,
+        //   autoReconnect: true
+        // })
+      })
+    );
     // app.use(passport.initialize());
     // app.use(passport.session());
     app.use(flash());
@@ -87,9 +89,7 @@ module.exports.initialize = function() {
       next();
     });
 
-    app.use(
-      express.static(process.env.ROOT, { maxAge: 31557600000 })
-    );
+    app.use(express.static(process.env.ROOT, { maxAge: 31557600000 }));
 
     /**
      * Primary app routes.
@@ -108,13 +108,15 @@ module.exports.initialize = function() {
         console.log(`Web server listening on http://localhost:${process.env.PORT}`);
         resolve();
       })
-      .on('error', (err) => { reject(err); });
+      .on('error', err => {
+        reject(err);
+      });
   });
-}
+};
 
 module.exports.close = function() {
   return new Promise((resolve, reject) => {
-    httpServer.close((err) => {
+    httpServer.close(err => {
       if (err) {
         reject(err);
         return;
@@ -122,7 +124,7 @@ module.exports.close = function() {
       resolve();
     });
   });
-}
+};
 
 const iso8601RegExp = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/;
 
@@ -133,6 +135,6 @@ module.exports.reviveJson = function(key, value) {
   } else {
     return value;
   }
-}
+};
 
 // export default app;

@@ -40,31 +40,35 @@ Cursor.prototype.read = function(cb) {
 };
 
 Cursor.prototype.close = function(cb) {
-  this.o_cursor.close((err) => {
-    if (err) { return cb(err); }
+  this.o_cursor.close(err => {
+    if (err) {
+      return cb(err);
+    }
     return cb();
   });
-}
+};
 
 // Private API
 // -----------
 
 Cursor.prototype._fetchRows = function(numRows, done) {
   this.o_cursor.getRows(numRows, (err, rows) => {
-    if (err) { return this.emit('error', err); }
+    if (err) {
+      return this.emit('error', err);
+    }
 
     if (rows.length === 0) {
       return this.close(done);
     }
 
-    rows.forEach((row) => {
+    rows.forEach(row => {
       var rowData = this._getRowData(row);
       this.emit('data', rowData);
     });
 
     this._fetchRows(numRows, done);
   });
-}
+};
 
 Cursor.prototype._configure = function(metaData) {
   this._columnConfig = metaData;

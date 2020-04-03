@@ -1,13 +1,11 @@
 module.exports = {
   root: true,
   env: {
-    node: true
+    node: true,
   },
-  extends: [
-    'standard'
-  ],
+  extends: ['standard'],
   parserOptions: {
-    parser: 'babel-eslint'
+    parser: 'babel-eslint',
   },
   // add your custom rules here
   rules: {
@@ -18,11 +16,10 @@ module.exports = {
     'arrow-parens': 'off',
     'one-var': 'off',
     'no-unused-vars': 'off',
-    'semi': 'off',
-    'camelcase': 'off',
+    semi: 'off',
+    camelcase: 'off',
     'no-async-promise-executor': 'off',
     'prefer-const': 'off',
-
     'import/first': 'off',
     'import/named': 'error',
     'import/namespace': 'error',
@@ -35,9 +32,19 @@ module.exports = {
     'space-before-function-paren': 'off',
     'no-unneeded-ternary': 'off',
     'dot-notation': 'off',
+    // 'comma-dangle': [
+    //   1,
+    //   {
+    //     objects: 'always',
+    //     arrays: 'ignore',
+    //     imports: 'ignore',
+    //     exports: 'ignore',
+    //     functions: 'ignore',
+    //   },
+    // ],
     // allow console.log during development only
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     // allow debugger during development only
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
-  }
-}
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+  },
+};

@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack')
 // const fs = require('fs');
 const nodeExternals = require('webpack-node-externals')
-const HtmlWebPackPlugin = require("html-webpack-plugin")
+const HtmlWebPackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin');
 // const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
@@ -31,7 +31,7 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader"
+          loader: 'babel-loader'
         }
       },
       {
@@ -40,7 +40,7 @@ module.exports = {
         test: /\.html$/,
         use: [
           {
-            loader: "html-loader"
+            loader: 'html-loader'
             // options: { minimize: true }
           }
         ]

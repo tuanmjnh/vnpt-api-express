@@ -1,22 +1,19 @@
 const dbapi = require('../db_apis/users'),
   dbapiAuth = require('../db_apis/auth'),
-  crypto = require('../utils/crypto'),
-  middleware = require('../services/middleware')
+  crypto = require('../utils/crypto');
 
 module.exports.select = async function(req, res, next) {
   try {
-    const verify = middleware.verify(req, res)
-    if (!verify) return
-    const user = await dbapiAuth.findNguoiDung({ nguoidung_id: verify.id })
-    let condition = `trangthai>=${!req.query.trangthai ? 1 : req.query.trangthai}`
-    condition += user && user.length && user[0].donvi_id ? ` and nv.donvi_id=${user[0].donvi_id}` : ''
-    if (!user[0].donvi_id && req.query.donvi_id) condition += ` and nv.donvi_id=${req.query.donvi_id}`
+    const user = await dbapiAuth.findNguoiDung({ nguoidung_id: req.verify.id });
+    let condition = `trangthai>=${!req.query.trangthai ? 1 : req.query.trangthai}`;
+    condition += user && user.length && user[0].donvi_id ? ` and nv.donvi_id=${user[0].donvi_id}` : '';
+    if (!user[0].donvi_id && req.query.donvi_id) condition += ` and nv.donvi_id=${req.query.donvi_id}`;
     if (req.query.filter) {
-      const filter = `like ${process.env.DB_SCHEMA_TTKD}.CONVERTTOUNSIGN('%${req.query.filter}%',1)`
-      condition += ` and (ma_nd ${filter} or ${process.env.DB_SCHEMA_TTKD}.CONVERTTOUNSIGN(ten_nd,1) ${filter} or ma_nv ${filter} or TTKD_BKN.CONVERTTOUNSIGN(ten_nv,1) ${filter})`
+      const filter = `like ${process.env.DB_SCHEMA_TTKD}.CONVERTTOUNSIGN('%${req.query.filter}%',1)`;
+      condition += ` and (ma_nd ${filter} or ${process.env.DB_SCHEMA_TTKD}.CONVERTTOUNSIGN(ten_nd,1) ${filter} or ma_nv ${filter} or TTKD_BKN.CONVERTTOUNSIGN(ten_nv,1) ${filter})`;
     }
-    if (req.query.sortBy) req.query.sortBy = req.query.sortBy.split(',').join('","')
-    else req.query.sortBy = '"ma_nd"'
+    if (req.query.sortBy) req.query.sortBy = req.query.sortBy.split(',').join('","');
+    else req.query.sortBy = '"ma_nd"';
     if (req.query.page && req.query.rowsPerPage) {
       const options = {
         v_sql: condition,
@@ -24,61 +21,120 @@ module.exports.select = async function(req, res, next) {
         v_limmit: parseInt(req.query.rowsPerPage),
         v_order: `"${req.query.sortBy}"` + (req.query.descending === 'true' ? ' DESC' : ''),
         v_total: { type: 2010, dir: 3002 }
+      };
+      const rs = await dbapi.paging(options, condition);
+      if (rs) {
+        return res
+          .status(200)
+          .json(rs)
+          .end();
       }
-      const rs = await dbapi.paging(options, condition)
-      if (rs) return res.status(200).json(rs).end()
     } else {
-      const rs = await dbapi.getAll(condition)
-      if (rs) return res.status(200).json(rs).end()
+      const rs = await dbapi.getAll(condition);
+      if (rs) {
+        return res
+          .status(200)
+          .json(rs)
+          .end();
+      }
     }
-    return res.status(200).json({ rowsNumber: 0, data: [] }).end()
+    return res
+      .status(200)
+      .json({ rowsNumber: 0, data: [] })
+      .end();
   } catch (e) {
-    console.log(e)
-    return res.status(500).send('invalid')
+    console.log(e);
+    return res.status(500).send('invalid');
   }
-}
+};
 
 module.exports.find = async function(req, res, next) {
   try {
-    if (!middleware.verify(req, res)) return
     if (req.query.nguoidung_id) {
-      const rs = await dbapi.find({ nguoidung_id: req.query.nguoidung_id })
-      if (rs) return res.status(200).json(rs).end()
-      return res.status(200).json([]).end()
+      const rs = await dbapi.find({ nguoidung_id: req.query.nguoidung_id });
+      if (rs) {
+        return res
+          .status(200)
+          .json(rs)
+          .end();
+      }
+      return res
+        .status(200)
+        .json([])
+        .end();
     } else if (req.query.nhanvien_id) {
-      const rs = await dbapi.find([])
-      if (rs) return res.status(200).json(rs).end()
-      return res.status(200).json([]).end()
+      const rs = await dbapi.find([]);
+      if (rs) {
+        return res
+          .status(200)
+          .json(rs)
+          .end();
+      }
+      return res
+        .status(200)
+        .json([])
+        .end();
     } else if (req.query.ma_nd) {
-      const rs = await dbapi.find({ ma_nd: req.query.ma_nd })
-      if (rs) return res.status(200).json(rs).end()
-      return res.status(200).json([]).end()
+      const rs = await dbapi.find({ ma_nd: req.query.ma_nd });
+      if (rs) {
+        return res
+          .status(200)
+          .json(rs)
+          .end();
+      }
+      return res
+        .status(200)
+        .json([])
+        .end();
     } else if (req.query.ma_nv) {
-      const rs = await dbapi.find({ ma_nv: req.query.ma_nv })
-      if (rs) return res.status(200).json(rs).end()
-      return res.status(200).json([]).end()
+      const rs = await dbapi.find({ ma_nv: req.query.ma_nv });
+      if (rs) {
+        return res
+          .status(200)
+          .json(rs)
+          .end();
+      }
+      return res
+        .status(200)
+        .json([])
+        .end();
     } else if (req.query.donvi_id) {
-      const rs = await dbapi.find({ donvi_id: req.query.donvi_id })
-      if (rs) return res.status(200).json(rs).end()
-      return res.status(200).json([]).end()
+      const rs = await dbapi.find({ donvi_id: req.query.donvi_id });
+      if (rs) {
+        return res
+          .status(200)
+          .json(rs)
+          .end();
+      }
+      return res
+        .status(200)
+        .json([])
+        .end();
     }
   } catch (e) {
-    console.log(e)
-    return res.status(500).send('invalid')
+    console.log(e);
+    return res.status(500).send('invalid');
   }
-}
+};
 
 module.exports.getPassword = async function(req, res, next) {
   try {
-    if (!middleware.verify(req, res)) return
-    const rs = await dbapi.getPassword({ ma_nd: req.query.ma_nd })
-    if (rs) return res.status(200).json(rs).end()
-    return res.status(200).json([]).end()
+    const rs = await dbapi.getPassword({ ma_nd: req.query.ma_nd });
+    if (rs) {
+      return res
+        .status(200)
+        .json(rs)
+        .end();
+    }
+    return res
+      .status(200)
+      .json([])
+      .end();
   } catch (e) {
-    console.log(e)
-    return res.status(500).send('invalid')
+    console.log(e);
+    return res.status(500).send('invalid');
   }
-}
+};
 
 module.exports.insert = async function(req, res, next) {
   // try {
@@ -105,7 +161,7 @@ module.exports.insert = async function(req, res, next) {
   // } catch (e) {
   //   return res.status(500).send('invalid')
   // }
-}
+};
 
 module.exports.update = async function(req, res, next) {
   // try {
@@ -137,7 +193,7 @@ module.exports.update = async function(req, res, next) {
   // } catch (e) {
   //   return res.status(500).send('invalid')
   // }
-}
+};
 
 module.exports.resetPassword = async function(req, res, next) {
   // try {
@@ -161,7 +217,7 @@ module.exports.resetPassword = async function(req, res, next) {
   // } catch (e) {
   //   return res.status(500).send('invalid')
   // }
-}
+};
 
 module.exports.lock = async function(req, res, next) {
   // try {
@@ -197,7 +253,7 @@ module.exports.lock = async function(req, res, next) {
   // } catch (e) {
   //   return res.status(500).send('invalid')
   // }
-}
+};
 
 module.exports.verified = async function(req, res, next) {
   // try {
@@ -217,30 +273,36 @@ module.exports.verified = async function(req, res, next) {
   // } catch (e) {
   //   return res.status(500).send('invalid')
   // }
-}
+};
 
 module.exports.setRoles = async function(req, res, next) {
   try {
-    const verify = middleware.verify(req, res)
-    if (!verify) return
     // if (!req.body._id) return res.status(500).send('invalid')
-    if (!req.body || Object.keys(req.body).length < 1) return res.status(500).send('invalid')
-    const ct_insert = []
-    const ct_update = []
+    if (!req.body || Object.keys(req.body).length < 1) return res.status(500).send('invalid');
+    const ct_insert = [];
+    const ct_update = [];
     for await (let e of req.body.nguoidung_id) {
-      const salt = crypto.NewGuid()
-      const matkhau = crypto.NewGuid('n')
-      ct_insert.push({ nguoidung_id: e, roles_id: req.body.roles_id, salt: salt, matkhau: crypto.md5(matkhau + salt) })
-      ct_update.push({ nguoidung_id: e, roles_id: req.body.roles_id })
+      const salt = crypto.NewGuid();
+      const matkhau = crypto.NewGuid('n');
+      ct_insert.push({ nguoidung_id: e, roles_id: req.body.roles_id, salt: salt, matkhau: crypto.md5(matkhau + salt) });
+      ct_update.push({ nguoidung_id: e, roles_id: req.body.roles_id });
     }
-    const rs = await dbapi.setRoles(ct_insert, ct_update)
-    if (rs) return res.status(202).json(rs).end()
-    return res.status(200).json([]).end()
+    const rs = await dbapi.setRoles(ct_insert, ct_update);
+    if (rs) {
+      return res
+        .status(202)
+        .json(rs)
+        .end();
+    }
+    return res
+      .status(200)
+      .json([])
+      .end();
   } catch (e) {
-    console.log(e)
-    return res.status(500).send('invalid')
+    console.log(e);
+    return res.status(500).send('invalid');
   }
-}
+};
 
 module.exports.delete = async function(req, res, next) {
   // try {
@@ -259,4 +321,4 @@ module.exports.delete = async function(req, res, next) {
   // } catch (e) {
   //   return res.status(500).send('invalid')
   // }
-}
+};

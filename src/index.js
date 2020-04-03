@@ -3,10 +3,10 @@ const oracleDB = require('./services/oracle.js');
 const oracleConfig = require('./config/oracle.js');
 const defaultThreadPoolSize = 4;
 // const path = require('path');
-process.env.ROOT = __dirname // Root path
+process.env.ROOT = __dirname; // Root path
 
 if (process.env.NODE_ENV !== 'production') {
-  process.env.BASE_URL = '/'
+  process.env.BASE_URL = '/';
 }
 
 // Increase thread pool size by poolMax
