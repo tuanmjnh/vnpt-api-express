@@ -1,7 +1,12 @@
+const dotenv = require('dotenv');
 // Load environment variables from .env file, where API keys and passwords are configured
-require('dotenv').config({
-  path: !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? '.env' : `.env.${process.env.NODE_ENV}`
-});
+// require('dotenv').config({
+//   path: !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? '.env' : `.env.${process.env.NODE_ENV}`
+// });
+// dotenv
+// dotenv.config({ path: `.env.${process.env.NODE_ENV.toString()}` });
+if (process.env.NODE_ENV.toString().trim() === 'development') dotenv.config({ path: '.env.development' });
+else dotenv.config({ path: '.env' });
 // const path = require('path')
 process.env.ROOT_PATH = __dirname; // Root path
 //
