@@ -47,9 +47,11 @@ module.exports.login = (req, res, next) => {
 
 module.exports.verify = (req, res, next) => {
   try {
+    const baseUrl = process.env.BASE_URL.trimChars('/'); // .replace(/\/$/, '');
+    const reqPath = req.path.trimChars('/');
     if (
-      (req.path === process.env.BASE_URL && req.method.toUpperCase() === 'GET') ||
-      (req.path === `${process.env.BASE_URL}api/auth` && req.method.toUpperCase() === 'POST')
+      (reqPath === baseUrl && req.method.toUpperCase() === 'GET') ||
+      (reqPath === `${baseUrl}/api/auth` && req.method.toUpperCase() === 'POST')
     ) {
       next();
       return null;

@@ -1,31 +1,5 @@
-const dotenv = require('dotenv');
-// Load environment variables from .env file, where API keys and passwords are configured
-// require('dotenv').config({
-//   path: !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? '.env' : `.env.${process.env.NODE_ENV}`
-// });
-// dotenv
-// dotenv.config({ path: `.env.${process.env.NODE_ENV.toString()}` });
-if (process.env.NODE_ENV.toString().trim() === 'development') dotenv.config({ path: '.env.development' });
-else dotenv.config({ path: '.env' });
-// const path = require('path')
-process.env.ROOT_PATH = __dirname; // Root path
-//
-process.env.PUBLIC_DIR = `${process.env.ROOT_PATH}/${process.env.PUBLIC_PATH}`; // path.join(__dirname, 'public')
-process.env.STATIC_DIR = `${process.env.PUBLIC_DIR}/${process.env.STATIC_PATH}`;
-process.env.UPLOAD_DIR = `${process.env.PUBLIC_DIR}/${process.env.UPLOAD_PATH}`;
-
-// console.log(process.env.DB_SCHEMA_ADMIN)
-// console.log(process.env.DB_SCHEMA_DULIEU)
-// console.log(process.env.DB_SCHEMA_CSS)
-// console.log(process.env.DB_SCHEMA_BCSS)
-// console.log(process.env.DB_SCHEMA_BSC)
-// console.log(process.env.DB_SCHEMA_HDDT)
-// console.log(process.env.DB_SCHEMA_QLSC)
-// console.log(process.env.DB_SCHEMA_QLTB)
-// console.log(process.env.DB_SCHEMA_QLTN)
-// console.log(process.env.DB_SCHEMA_QLVT)
-// console.log(process.env.DB_SCHEMA_TINHCUOC)
-// console.log(process.env.DB_SCHEMA_TTKD)
+require('./utils/prototypes');
+require('./config');
 
 const express = require('express'),
   bodyParser = require('body-parser'),
@@ -90,10 +64,10 @@ app.use((req, res, next) => {
   next();
 });
 // Error Handler. Provides full stack - remove for production
-if (process.env.NODE_ENV !== 'production') {
-  const errorHandler = require('errorHandler');
-  app.use(errorHandler());
-}
+// if (process.env.NODE_ENV !== 'production') {
+//   const errorHandler = require('errorHandler');
+//   app.use(errorHandler());
+// }
 
 // middleware
 app.use(middleware.verify);
@@ -102,9 +76,9 @@ app.use(middleware.verify);
  * Primary app routes.
  */
 /* GET home page. */
-app.get(process.env.BASE_URL, function(req, res, next) {
+app.get(process.env.BASE_URL, function (req, res, next) {
   // res.render('index', { title: 'Express' })
-  res.end('VNPT Express Server api', { title: 'Express' });
+  res.end(`VNPT Express Server api. version: ${process.env.npm_package_version}`);
 });
 // Mount the router at /api so all its routes start with /api
 app.use(`${process.env.BASE_URL}api`, router);
@@ -112,14 +86,13 @@ app.use(`${process.env.BASE_URL}api`, router);
 var port = process.env.PORT || 8001;
 // listen
 const server = app
-  .listen(port, '127.0.0.1')
+  .listen(port)
   .on('listening', () => {
-    process.env.HOST = `http://${server.address().address}:${port}`;
     console.log(`Web server listening on: ${process.env.HOST}`);
     console.log(`Mode: ${process.env.NODE_ENV}`);
-    // console.log(process.env.BASE_URL)
-    // console.log(process.env.SECRET)
+    console.log(`BASE_URL: ${process.env.BASE_URL}`);
+    console.log(`SECRET: ${process.env.SECRET}`);
   })
-  .on('error', err => {
+  .on('error', (err) => {
     console.log(err);
   });

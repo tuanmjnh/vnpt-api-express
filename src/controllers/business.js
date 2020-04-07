@@ -1,6 +1,6 @@
 const db = require('../services/oracle.js'),
   model = require('../models/business'),
-  ip = require('../utils/ip');
+  request = require('../utils/request');
 
 module.exports.select = async function(req, res, next) {
   try {
@@ -80,7 +80,7 @@ module.exports.insert = async function(req, res, next) {
       nguoi_gt: req.body.nguoi_gt,
       ngay_tao: Date.now(),
       nguoi_tao: req.verify.code,
-      ip_tao: ip.get(req),
+      ip_tao: request.getIp(req),
       trang_thai: req.body.trang_thai
     };
     const rs = await db.execute(model.insert(context), context);
@@ -131,7 +131,7 @@ module.exports.update = async function(req, res, next) {
       nguoi_gt: req.body.nguoi_gt,
       ngay_cn: Date.now(),
       nguoi_cn: req.verify.code,
-      ip_cn: ip.get(req),
+      ip_cn: request.getIp(req),
       trang_thai: req.body.trang_thai
     };
     const rs = await db.execute(model.update(context), context);
@@ -156,7 +156,7 @@ module.exports.lock = async function(req, res, next) {
   try {
     const context = [];
     for await (let e of req.body.data) {
-      context.push({ id: e, ip_xoa: ip.get(req), nguoi_xoa: req.verify.code });
+      context.push({ id: e, ip_xoa: request.getIp(req), nguoi_xoa: req.verify.code });
     }
     const sql = `UPDATE ${process.env.DB_SCHEMA_TTKD}.CONTRACT_ENTERPRISE 
     SET trang_thai=DECODE(trang_thai,1,0,1),IP_XOA=:ip_xoa,NGUOI_XOA=:nguoi_xoa,NGAY_XOA=SYSDATE

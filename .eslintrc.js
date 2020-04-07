@@ -1,11 +1,11 @@
 module.exports = {
   root: true,
   env: {
-    node: true,
+    node: true
   },
   extends: ['standard'],
   parserOptions: {
-    parser: 'babel-eslint',
+    parser: 'babel-eslint'
   },
   // add your custom rules here
   rules: {
@@ -32,6 +32,7 @@ module.exports = {
     'space-before-function-paren': 'off',
     'no-unneeded-ternary': 'off',
     'dot-notation': 'off',
+    'no-extend-native': 'off',
     // 'comma-dangle': [
     //   1,
     //   {
@@ -45,6 +46,6 @@ module.exports = {
     // allow console.log during development only
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     // allow debugger during development only
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-  },
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+  }
 };

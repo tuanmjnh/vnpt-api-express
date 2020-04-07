@@ -1,6 +1,6 @@
 const db = require('../services/oracle.js'),
   model = require('../models/news'),
-  ip = require('../utils/ip');
+  request = require('../utils/request');
 
 module.exports.select = async function(req, res, next) {
   try {
@@ -65,7 +65,7 @@ module.exports.insert = async function(req, res, next) {
       tags: req.body.tags,
       attach: req.body.attach,
       created_at: Date.now(),
-      created_ip: ip.get(req),
+      created_ip: request.getIp(req),
       created_by: req.verify.code,
       flag: req.body.flag
     };
@@ -106,7 +106,7 @@ module.exports.update = async function(req, res, next) {
       attach: req.body.attach,
       tags: req.body.tags,
       updated_at: Date.now(),
-      updated_ip: ip.get(req),
+      updated_ip: request.getIp(req),
       updated_by: req.verify.code,
       flag: req.body.flag
     };
@@ -132,7 +132,7 @@ module.exports.lock = async function(req, res, next) {
   try {
     const context = [];
     for await (let e of req.body.data) {
-      context.push({ id: e, deleted_ip: ip.get(req), deleted_by: req.verify.code });
+      context.push({ id: e, deleted_ip: request.getIp(req), deleted_by: req.verify.code });
     }
     const sql = `UPDATE ${model.name} SET flag=DECODE(flag,1,0,1),deleted_ip=:deleted_ip,deleted_by=:deleted_by,deleted_at=SYSDATE
     WHERE id=:id`;
