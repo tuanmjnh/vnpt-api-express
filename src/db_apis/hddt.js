@@ -1,6 +1,6 @@
 const db = require('../services/oracle.js');
 
-module.exports.getData = async function(context) {
+module.exports.getData = async function (context) {
   let sql = `SELECT THANG "thang",
     NAM "nam",
     CHUKY "chuky",
@@ -16,6 +16,7 @@ module.exports.getData = async function(context) {
     TIEN_KM "tien_km",
     CKTM "cktm",
     HT_VTCI "ht_vtci",
+    PHUTHU_HD "phuthu_hd",
     TIEN "tien",
     VAT "vat",
     TONG "tong",
@@ -36,25 +37,25 @@ module.exports.getData = async function(context) {
     TEN_DONVI_QL "ten_donvi_ql",
     STK "stk",
     PATTERN "pattern"
-  FROM ${context.table}`
+  FROM ${context.table}`;
   if (context.ma_tt && context.ma_tt.length > 0) {
-    sql += ` WHERE ma_tt IN('${context.ma_tt.join('\',\'')}')`
+    sql += ` WHERE ma_tt IN('${context.ma_tt.join("','")}')`;
   }
-  const result = await db.execute(sql)
-  return result.rows
+  const result = await db.execute(sql);
+  return result.rows;
 };
 
-module.exports.getKyHoaDon = async function() {
+module.exports.getKyHoaDon = async function () {
   let sql = `select decode(SIGN(thang-10),-1,('0'||thang),thang)||'/'||nam||' - Chu kỳ '||decode(SIGN(chuky-10),-1,('0'||chuky),chuky) "kyhoadon",
   nam "nam",decode(SIGN(thang-10),-1,('0'||thang),thang) "thang",decode(SIGN(chuky-10),-1,('0'||chuky),chuky) "chuky"
   from(
   select DISTINCT chuky,thang,nam from ttkd_bkn.hddt_ezpay
-  ) order by nam,thang,chuky`
-  const result = await db.execute(sql)
-  return result.rows
+  ) order by nam,thang,chuky`;
+  const result = await db.execute(sql);
+  return result.rows;
 };
 
-module.exports.getHDDTOld = async function(context) {
+module.exports.getHDDTOld = async function (context) {
   let sql = `select THANG "thang",
     NAM "nam",
     CHUKY "chuky",
@@ -90,20 +91,20 @@ module.exports.getHDDTOld = async function(context) {
     TEN_DONVI_QL "ten_donvi_ql",
     STK "stk",
     PATTERN "pattern"
-from ttkd_bkn.hddt_ezpay where nam=:nam and thang=:thang and chuky=:chuky`
+from ttkd_bkn.hddt_ezpay where nam=:nam and thang=:thang and chuky=:chuky`;
   if (context.ma_tt && context.ma_tt.length > 0) {
-    sql += ` and ma_tt in('${context.ma_tt.join('\',\'')}')`
+    sql += ` and ma_tt in('${context.ma_tt.join("','")}')`;
   }
   // console.log(context.ma_tt)
-  const result = await db.execute(sql, context)
-  return result.rows
+  const result = await db.execute(sql, context);
+  return result.rows;
 };
 
 module.exports.getTableHDDT = async function (context) {
   // let sql = `SELECT table_name "name" FROM user_tables WHERE table_name like '${context.table.toUpperCase()}%' ORDER BY table_name DESC`
-  let sql = `SELECT owner,table_name "name" FROM dba_tables WHERE owner='TTKD_BKN' AND table_name like '${context.table.toUpperCase()}%' ORDER BY table_name DESC`
-  const result = await db.execute(sql)
-  return result.rows
+  let sql = `SELECT owner,table_name "name" FROM dba_tables WHERE owner='TTKD_BKN' AND table_name like '${context.table.toUpperCase()}%' ORDER BY table_name DESC`;
+  const result = await db.execute(sql);
+  return result.rows;
 };
 
 module.exports.getHDDTDULIEU = async function (context) {
@@ -139,11 +140,11 @@ module.exports.getHDDTDULIEU = async function (context) {
     KH_SERI "kh_seri",
     QRCODE "qrcode",
     PATTERN "pattern"
-from ttkd_bkn.${context.table}`
+from ttkd_bkn.${context.table}`;
   if (context.ma_tt && context.ma_tt.length > 0) {
-    sql += ` where ma_tt in('${context.ma_tt.join('\',\'')}')`
+    sql += ` where ma_tt in('${context.ma_tt.join("','")}')`;
   }
-  console.log(sql)
-  const result = await db.execute(sql)
-  return result.rows
+  console.log(sql);
+  const result = await db.execute(sql);
+  return result.rows;
 };
