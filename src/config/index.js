@@ -1,5 +1,5 @@
-import path from 'path';
-import dotenv from 'dotenv';
+const path = require('path');
+const dotenv = require('dotenv');
 
 // dotenv
 // dotenv.config({ path: `.env.${process.env.NODE_ENV.toString()}` });
