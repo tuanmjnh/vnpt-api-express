@@ -19,6 +19,7 @@ const news = require('../controllers/news');
 const business = require('../controllers/business');
 // const contractCustomer = require('../controllers/contract-customer')
 const hddt = require('../controllers/hddt');
+const uploadExcel = require('../controllers/upload-excel');
 // const test = require('../controllers/test')
 // const test2 = require('../controllers/test2')
 // const employees = require('../controllers/employees.js')
@@ -39,10 +40,7 @@ router
   .post(fileManager.upload, fileManager.post);
 
 // auth
-router
-  .route('/auth/:id?')
-  .get(auth.get)
-  .post(auth.post);
+router.route('/auth/:id?').get(auth.get).post(auth.post);
 // .put(auth.put)
 // .delete(auth.delete)
 
@@ -163,6 +161,9 @@ router.route('/hddt/get-data').get(hddt.getData);
 // router.route('/hddt/old').post(hddt.getHDDTOld)
 // router.route('/hddt/dulieu').post(hddt.getHDDTDULIEU)
 // router.route('/hddt/table').get(hddt.getTableHDDT)
+
+// Upload excel
+router.route('/upload-excel').post(uploadExcel.insert);
 
 // // test
 // router.route('/test/:id?')
