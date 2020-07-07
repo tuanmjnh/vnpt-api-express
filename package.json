@@ -44,7 +44,7 @@
     "concurrently": "^3.5.1",
     "copy-webpack-plugin": "^5.1.1",
     "css-loader": "^3.4.2",
-    "electron": "^5.0.1",
+    "electron": "^9.1.0",
     "electron-rebuild": "^1.8.5",
     "errorhandler": "^1.5.1",
     "eslint": "^5.16.0",
